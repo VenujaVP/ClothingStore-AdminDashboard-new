@@ -8,7 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaUpload, FaTrash, FaArrowLeft, FaBox, FaInfoCircle, FaPaperPlane } from 'react-icons/fa';
-import withAuth from '../withAuth';
+import withAuth from '../../withAuth'; // Fix the import path
 import './ReturnsOrders.css';
 
 const ReturnsOrders = ({ userId }) => {
@@ -28,27 +28,32 @@ const ReturnsOrders = ({ userId }) => {
     const fetchOrderDetails = async () => {
       setIsLoading(true);
       try {
+        // Log the parameters to debug
+        console.log("Fetching order:", orderId, "for user:", userId);
+        
         const response = await axios.get(`http://localhost:8082/api/user/order/${orderId}?userId=${userId}`);
         
         if (response.data.success) {
           // Verify the order belongs to this user and is in delivered status
           const orderData = response.data.order;
           
+          console.log("Order status:", orderData.order_status);
+          
           if (orderData.order_status !== 'Delivered') {
             toast.error('Only delivered orders can be returned');
-            navigate('/orders');
+            window.location.href = '/user-order-details';
             return;
           }
           
           setOrder(orderData);
         } else {
           toast.error('Failed to fetch order details');
-          navigate('/orders');
+          window.location.href = '/user-order-details';
         }
       } catch (error) {
         console.error('Error fetching order details:', error);
         toast.error('Error loading order data');
-        navigate('/orders');
+        window.location.href = '/user-order-details';
       } finally {
         setIsLoading(false);
       }
@@ -56,6 +61,10 @@ const ReturnsOrders = ({ userId }) => {
 
     if (orderId && userId) {
       fetchOrderDetails();
+    } else {
+      console.error("Missing orderId or userId", { orderId, userId });
+      toast.error('Missing order information');
+      window.location.href = '/user-order-details';
     }
   }, [orderId, userId, navigate]);
 
@@ -130,6 +139,8 @@ const ReturnsOrders = ({ userId }) => {
         formData.append('images', image);
       });
       
+      console.log("Submitting return request for order:", orderId);
+      
       // Submit return request
       const response = await axios.post(
         'http://localhost:8082/api/user/submit-return-request',
@@ -143,7 +154,8 @@ const ReturnsOrders = ({ userId }) => {
       
       if (response.data.success) {
         toast.success('Return request submitted successfully');
-        navigate('/orders');
+        // Use window.location for more reliable navigation
+        window.location.href = '/user-order-details';
       } else {
         toast.error(response.data.message || 'Failed to submit return request');
       }
@@ -169,7 +181,10 @@ const ReturnsOrders = ({ userId }) => {
       <div className="return-order-error">
         <FaInfoCircle />
         <h3>Order not found</h3>
-        <button onClick={() => navigate('/orders')} className="back-btn">
+        <button 
+          onClick={() => window.location.href = '/user-order-details'} 
+          className="back-btn"
+        >
           <FaArrowLeft /> Back to Orders
         </button>
       </div>
@@ -179,7 +194,7 @@ const ReturnsOrders = ({ userId }) => {
   return (
     <div className="return-order-container">
       <div className="return-order-header">
-        <button onClick={() => navigate('/orders')} className="back-btn">
+        <button onClick={() => navigate('/user-order-details')} className="back-btn">
           <FaArrowLeft /> Back to Orders
         </button>
         <h2>Return Request</h2>
@@ -295,7 +310,7 @@ const ReturnsOrders = ({ userId }) => {
             <button 
               type="button" 
               className="cancel-btn"
-              onClick={() => navigate('/orders')}
+              onClick={() => navigate('/user-order-details')}
               disabled={isSubmitting}
             >
               Cancel

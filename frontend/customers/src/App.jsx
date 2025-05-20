@@ -40,6 +40,7 @@ import AuthenticatedOrderConfirmationPage from './pages/OrderConfirmationPage/Or
 
 import AuthenticatedPayments from './pages/USER/userPayments/Payments';
 import AuthenticatedorderDetails from './pages/USER/orderdetails/orderDetails';
+import AuthenticatedReturnsOrders from './pages/USER/ReturnsOrders/ReturnsOrders';
 
 function App() {
   const location = useLocation();
@@ -83,6 +84,7 @@ function App() {
             <Route path="/user-wishlist" element={<AuthenticatedWishList />} />
             <Route path="/user-payments" element={<AuthenticatedPayments />} />
             <Route path="/user-order-details" element={<AuthenticatedorderDetails />} />
+            <Route path="/return-order/:orderId" element={<AuthenticatedReturnsOrders />} />
 
             {/* Fallback route for unmatched paths */}
 

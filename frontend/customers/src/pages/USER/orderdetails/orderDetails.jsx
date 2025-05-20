@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect, navigate } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -10,7 +10,7 @@ import { FaBox, FaTruck, FaCheck, FaExclamationCircle, FaSpinner,
          FaChevronDown, FaChevronUp, FaCalendarAlt, FaShoppingBag,
          FaMapMarkerAlt, FaArrowLeft, FaArrowRight, FaSearch, 
          FaInfoCircle, FaRegTimesCircle, FaClock, FaShippingFast,
-         FaStar, FaBoxOpen, FaMoneyBillWave, FaListAlt, FaTimes, FaCheckCircle, FaExchangeAlt  } from 'react-icons/fa';
+         FaStar, FaBoxOpen, FaMoneyBillWave, FaListAlt, FaTimes, FaCheckCircle, FaExchangeAlt, FaUser  } from 'react-icons/fa';
 import withAuth from '../../withAuth';
 import './orderDetails.css';
 
@@ -120,6 +120,16 @@ const styles = `
     background-color: #d32f2f;
   }
 
+  /* Add return button style */
+  .return-btn {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  .return-btn:hover {
+    background-color: #e68a00;
+  }
+
   .action-btn.loading {
     background-color: #cccccc;
     cursor: not-allowed;
@@ -137,7 +147,18 @@ const styles = `
 `;
 
 // Order Details Modal Component
-const OrderDetailsModal = ({ order, onClose, handleModalOverlayClick, formatDate, getStatusIcon, handleOrderDelete, closeOrderDetailsModal, handlePaymentRedirect, isLoading }) => {
+const OrderDetailsModal = ({ 
+  order, 
+  onClose, 
+  handleModalOverlayClick, 
+  formatDate, 
+  getStatusIcon, 
+  handleOrderDelete, 
+  closeOrderDetailsModal, 
+  handlePaymentRedirect, 
+  isLoading,
+  navigate // Add this parameter
+}) => {
   if (!order) return null;
   
   const getStatusColor = (status) => {
@@ -225,7 +246,8 @@ const OrderDetailsModal = ({ order, onClose, handleModalOverlayClick, formatDate
                     className="action-btn return-btn"
                     onClick={() => {
                       closeOrderDetailsModal();
-                      navigate(`/return-order/${order.order_id}`);
+                      // Use full URL to avoid navigation issues
+                      window.location.href = `/return-order/${order.order_id}`;
                     }}
                   >
                     <FaExchangeAlt /> Return Item
@@ -991,6 +1013,20 @@ const OrderDetails = ({ userId }) => {
                       <FaTimes className="btn-icon" /> Cancel
                     </button>
                   )}
+                  
+                  {/* Add return button for delivered orders */}
+                  {order.order_status.toLowerCase() === "delivered" && (
+                    <button 
+                      className="action-btn return-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Use full URL for more reliable navigation
+                        window.location.href = `/return-order/${order.order_id}`;
+                      }}
+                    >
+                      <FaExchangeAlt className="btn-icon" /> Return
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -1031,6 +1067,7 @@ const OrderDetails = ({ userId }) => {
           closeOrderDetailsModal={closeOrderDetailsModal}
           handlePaymentRedirect={handlePaymentRedirect}
           isLoading={isLoading}
+          navigate={navigate} // Add this line to pass navigate function
         />
       )}
     </div>

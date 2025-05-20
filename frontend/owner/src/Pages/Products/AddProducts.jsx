@@ -579,8 +579,8 @@ const AddProducts = ({ isEditMode }) => {
               <div className="form-row">
                 <div className="form-group">
                   <label>Product ID</label>
-                  <div className="input-group">
-                    <FaTag className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaTag style={styles.inputIcon} />
                     <input
                       type="text"
                       name="product_id"
@@ -589,14 +589,12 @@ const AddProducts = ({ isEditMode }) => {
                       onChange={handleChange}
                       readOnly={isEditMode}
                       required
-                      style={{
-                        paddingRight: isEditMode ? '12px' : '85px' // Add space for the button
-                      }}
+                      style={styles.idInput}
                     />
                     {!isEditMode && (
                       <button
                         type="button"
-                        className="id-generate-btn"
+                        style={styles.generateBtn}
                         onClick={generateProductId}
                         title="Generate Product ID"
                       >
@@ -604,12 +602,12 @@ const AddProducts = ({ isEditMode }) => {
                       </button>
                     )}
                   </div>
-                  {errors.product_id && <span className="error-message">{errors.product_id}</span>}
+                  {errors.product_id && <span style={styles.errorMessage}>{errors.product_id}</span>}
                 </div>
                 <div className="form-group">
                   <label>Product Name</label>
-                  <div className="input-group">
-                    <FaBox className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaBox style={styles.inputIcon} />
                     <input
                       type="text"
                       name="product_name"
@@ -617,9 +615,10 @@ const AddProducts = ({ isEditMode }) => {
                       value={formData.product_name}
                       onChange={handleChange}
                       required
+                      style={styles.input}
                     />
                   </div>
-                  {errors.product_name && <span className="error-message">{errors.product_name}</span>}
+                  {errors.product_name && <span style={styles.errorMessage}>{errors.product_name}</span>}
                 </div>
               </div>
 
@@ -655,17 +654,18 @@ const AddProducts = ({ isEditMode }) => {
               <div className="form-row">
                 <div className="form-group">
                   <label>Product Description</label>
-                  <div className="input-group">
-                    <FaInfoCircle className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaInfoCircle style={styles.inputIcon} />
                     <textarea
                       name="product_description"
                       placeholder="Enter product description"
                       value={formData.product_description}
                       onChange={handleChange}
                       required
+                      style={styles.textarea}
                     />
                   </div>
-                  {errors.product_description && <span className="error-message">{errors.product_description}</span>}
+                  {errors.product_description && <span style={styles.errorMessage}>{errors.product_description}</span>}
                 </div>
               </div>
 
@@ -673,8 +673,8 @@ const AddProducts = ({ isEditMode }) => {
               <div className="form-row">
                 <div className="form-group">
                   <label>Unit Price</label>
-                  <div className="input-group">
-                    <FaTag className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaTag style={styles.inputIcon} />
                     <input
                       type="number"
                       name="unit_price"
@@ -682,37 +682,40 @@ const AddProducts = ({ isEditMode }) => {
                       value={formData.unit_price}
                       onChange={handleChange}
                       required
+                      style={styles.input}
                     />
                   </div>
-                  {errors.unit_price && <span className="error-message">{errors.unit_price}</span>}
+                  {errors.unit_price && <span style={styles.errorMessage}>{errors.unit_price}</span>}
                 </div>
                 <div className="form-group">
                   <label>Date Added</label>
-                  <div className="input-group">
-                    <FaCalendar className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaCalendar style={styles.inputIcon} />
                     <input
                       type="date"
                       name="date_added"
                       value={formData.date_added}
                       onChange={handleChange}
                       required
+                      style={styles.input}
                     />
                   </div>
-                  {errors.date_added && <span className="error-message">{errors.date_added}</span>}
+                  {errors.date_added && <span style={styles.errorMessage}>{errors.date_added}</span>}
                 </div>
                 <div className="form-group">
                   <label>Shipping Weight</label>
-                  <div className="input-group">
-                    <FaWeightHanging className="input-icon" />
+                  <div style={styles.inputGroup}>
+                    <FaWeightHanging style={styles.inputIcon} />
                     <input
                       type="number"
                       name="shipping_weight"
                       placeholder="Enter shipping weight (KG)"
                       value={formData.shipping_weight}
                       onChange={handleChange}
+                      style={styles.input}
                     />
                   </div>
-                  {errors.shipping_weight && <span className="error-message">{errors.shipping_weight}</span>}
+                  {errors.shipping_weight && <span style={styles.errorMessage}>{errors.shipping_weight}</span>}
                 </div>
               </div>
 

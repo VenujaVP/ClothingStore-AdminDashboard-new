@@ -32,6 +32,7 @@ const Navbar = ({ onMobileMenuClick, isMobile, isMenuOpen }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedRole = localStorage.getItem('userRole');
+    console.log( "nvhgbvchgvgvvtoken", storedRole)
     
     if (token) {
       try {

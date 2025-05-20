@@ -63,8 +63,16 @@ import {
   getRefundStats
 } from '../controllers/ownerControllers_6_return_orders.js';
 
-
 import { ownerCreateEmployee, getAllEmployees, getEmployeeById, updateEmployee, deleteEmployee  } from '../controllers/ownerControllers_3_emp.js';
+
+import { 
+  getNotifications, 
+  markNotificationAsRead, 
+  markAllNotificationsAsRead,
+  createNotification,
+  createRoleNotification,
+  getUnreadCount
+} from '../controllers/ownerControllers_7_notifications.js';
 
 const router = express.Router();
 
@@ -179,5 +187,13 @@ router.get('/refunds/pending', getPendingRefunds);
 router.get('/refunds/completed', getCompletedRefunds);
 router.post('/refunds/process/:orderId', processRefund);
 router.get('/refunds/stats', getRefundStats);
+
+// Notification Routes
+router.get('/notifications', getNotifications);
+router.put('/notifications/:id/read', markNotificationAsRead);
+router.put('/notifications/read-all', markAllNotificationsAsRead);
+router.post('/notifications', createNotification);
+router.post('/notifications/role', createRoleNotification);
+router.get('/notifications/unread-count', getUnreadCount);
 
 export default router;

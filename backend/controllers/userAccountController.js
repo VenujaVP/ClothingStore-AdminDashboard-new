@@ -1,6 +1,8 @@
 // controllers/userAccountController.js
 
 import sqldb from '../config/sqldb.js'; // Import your SQL database connection
+import { createNotificationInternal, createRoleNotificationInternal } from './ownerControllers_7_notifications.js';
+
 
 // Get all payment history for a user (no pagination)
 export const getAllUserPaymentHistory = async (req, res) => {
@@ -413,7 +415,7 @@ export const getOrderStatusCounts = async (req, res) => {
   }
 };
 
-// Add this function to your controllers
+
 export const cancelOrder = async (req, res) => {
   const { orderId } = req.params;
   const { userId } = req.body; // User ID for verification
@@ -425,9 +427,12 @@ export const cancelOrder = async (req, res) => {
     const checkQuery = `
       SELECT 
         o.order_id, o.order_status, o.variation_id, o.quantity, o.payment_id, 
-        o.total_amount, o.product_id, pv.units as current_stock
+        o.total_amount, o.product_id, pv.units as current_stock,
+        p.ProductName, c.NAME as customer_name
       FROM orders o
       LEFT JOIN product_variations pv ON o.variation_id = pv.VariationID
+      LEFT JOIN product_table p ON o.product_id = p.ProductID
+      LEFT JOIN customers c ON o.customer_id = c.ID
       WHERE o.order_id = ? AND o.customer_id = ?
     `;
     
@@ -533,6 +538,48 @@ export const cancelOrder = async (req, res) => {
         if (orderUpdateResult.affectedRows === 0) {
           throw new Error('Failed to update order status to Processing');
         }
+        
+        // 3. Create notification for admins about the cancelled paid order
+        const notificationTitle = `Order #${orderId} Cancelled - Refund Required`;
+        const notificationMessage = `Customer ${order.customer_name} cancelled order #${orderId} for ${order.ProductName} that was already paid. Amount: Rs. ${order.total_amount}. Please process the refund.`;
+        
+        // Directly insert notification into Polocity_Notifications table
+        const insertNotificationQuery = `
+          INSERT INTO Polocity_Notifications (
+            TITLE, 
+            MESSAGE, 
+            STATUS,
+            ROLE
+          ) VALUES (?, ?, 'unread', 'admin')
+        `;
+        
+        await new Promise((resolve, reject) => {
+          sqldb.query(
+            insertNotificationQuery,
+            [notificationTitle, notificationMessage],
+            (err, result) => {
+              if (err) {
+                console.error('Error creating notification:', err);
+                reject(err);
+              } else {
+                console.log(`Created admin notification ID: ${result.insertId}`);
+                resolve(result);
+              }
+            }
+          );
+        });
+        
+        // Also try the imported function as a backup method
+        try {
+          await createRoleNotificationInternal({
+            title: notificationTitle,
+            message: notificationMessage,
+            role: 'admin'
+          });
+        } catch (notifError) {
+          console.warn('Warning: createRoleNotificationInternal failed:', notifError.message);
+          // Continue execution even if this fails as we already created the notification directly
+        }
       }
       
       // Commit transaction
@@ -579,4 +626,6 @@ export const cancelOrder = async (req, res) => {
     });
   }
 };
+
+
 

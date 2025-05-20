@@ -47,24 +47,25 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 20px; /* Add space for error messages */
+    margin-bottom: 20px;
 }
 
 .input-icon {
     position: absolute;
-    left: 12px;
-    color: #23b893; /* Theme color */
+    left: 15px; /* Moved slightly to the right */
+    color: #23b893;
     font-size: 16px;
-    width: 20px; /* Fixed width for icon */
-    text-align: center; /* Center the icon in its space */
-    z-index: 1; /* Ensure icon stays above the input */
-    pointer-events: none; /* Prevent icon from intercepting clicks */
+    width: 20px;
+    text-align: center;
+    z-index: 1;
+    pointer-events: none;
+    background-color: transparent; /* Ensures icon has a clean background */
 }
 
 .input-group input,
 .input-group select {
     width: 100%;
-    padding: 12px 15px 12px 45px; /* Increased left padding */
+    padding: 12px 15px 12px 50px; /* Increased left padding even more */
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
@@ -72,18 +73,15 @@
     transition: all 0.3s ease;
     background-color: #f8f9fa;
     line-height: 1.5;
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
 }
 
 /* Create a more defined separation between icon and text */
 .input-group input::placeholder {
-    color: #aaa; /* Lighter color for placeholder */
-    opacity: 1; /* Ensure visibility */
+    color: #aaa;
+    opacity: 1;
     transition: opacity 0.3s ease;
-}
-
-/* Make placeholder fade on focus */
-.input-group input:focus::placeholder {
-    opacity: 0.6;
+    font-size: 13px; /* Slightly smaller placeholder text */
 }
 
 /* Special handling for input with generate button */
@@ -238,11 +236,11 @@ select {
 
 /* Ensure error messages don't overlap */
 .error-text {
-  color: #e74c3c;
-  font-size: 12px;
-  display: block;
-  position: absolute;
-  bottom: -18px;
-  left: 0;
-  width: 100%;
+    color: #e74c3c;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    bottom: -18px;
+    left: 2px; /* Slight adjustment to align with input field */
+    width: 100%;
 }

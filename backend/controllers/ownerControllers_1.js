@@ -402,4 +402,3 @@ export const completeEmailChange = (req, res) => {
   });
 };
 
-//Logout user

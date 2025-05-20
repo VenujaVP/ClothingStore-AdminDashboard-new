@@ -281,3 +281,16 @@ CREATE TABLE wishlists (
   FOREIGN KEY (product_id) REFERENCES product_table(ProductID) ON DELETE CASCADE,
   UNIQUE KEY unique_wishlist_entry (customer_id, product_id)
 );
+
+CREATE TABLE Polocity_Notifications (
+    ID INT AUTO_INCREMENT PRIMARY KEY,               -- Unique ID for each notification
+    USER_ID INT,                                     -- Foreign key to Polocity_Panel_Users
+    TITLE VARCHAR(255) NOT NULL,                     -- Short title or subject of the notification
+    MESSAGE TEXT NOT NULL,                           -- Full message content
+    STATUS ENUM('unread', 'read') DEFAULT 'unread',  -- Read status
+    ROLE ENUM('admin', 'onlineorderchecker') DEFAULT NULL, -- Role-based notification (optional)
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Notification creation time
+    readAt DATETIME DEFAULT NULL,                    -- Time the user read the notification
+
+    FOREIGN KEY (USER_ID) REFERENCES Polocity_Panel_Users(ID) ON DELETE CASCADE
+);

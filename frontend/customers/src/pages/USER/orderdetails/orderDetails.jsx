@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, navigate } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -10,7 +10,7 @@ import { FaBox, FaTruck, FaCheck, FaExclamationCircle, FaSpinner,
          FaChevronDown, FaChevronUp, FaCalendarAlt, FaShoppingBag,
          FaMapMarkerAlt, FaArrowLeft, FaArrowRight, FaSearch, 
          FaInfoCircle, FaRegTimesCircle, FaClock, FaShippingFast,
-         FaStar, FaBoxOpen, FaMoneyBillWave, FaListAlt, FaTimes, FaCheckCircle  } from 'react-icons/fa';
+         FaStar, FaBoxOpen, FaMoneyBillWave, FaListAlt, FaTimes, FaCheckCircle, FaExchangeAlt  } from 'react-icons/fa';
 import withAuth from '../../withAuth';
 import './orderDetails.css';
 
@@ -216,6 +216,19 @@ const OrderDetailsModal = ({ order, onClose, handleModalOverlayClick, formatDate
                     onClick={() => handleOrderDelete(order.order_id)}
                   >
                     <FaTimes /> Cancel Order
+                  </button>
+                )}
+                
+                {/* Add this new block for Return button */}
+                {order.order_status.toLowerCase() === "delivered" && (
+                  <button 
+                    className="action-btn return-btn"
+                    onClick={() => {
+                      closeOrderDetailsModal();
+                      navigate(`/return-order/${order.order_id}`);
+                    }}
+                  >
+                    <FaExchangeAlt /> Return Item
                   </button>
                 )}
               </div>

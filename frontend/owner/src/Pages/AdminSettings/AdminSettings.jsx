@@ -75,6 +75,7 @@ const AdminSettings = ({ userId }) => {
   
   // Fetch user profile with retry mechanism
   const fetchUserProfile = async (retry = false) => {
+    console.log("dsfsvfsdfsdv", userId)
     if (retry) {
       setFetchRetries(prev => prev + 1);
     } else {

@@ -543,20 +543,17 @@ export const cancelOrder = async (req, res) => {
         const notificationTitle = `Order #${orderId} Cancelled - Refund Required`;
         const notificationMessage = `Customer ${order.customer_name} cancelled order #${orderId} for ${order.ProductName} that was already paid. Amount: Rs. ${order.total_amount}. Please process the refund.`;
         
-        // Directly insert notification into Polocity_Notifications table
+        // Directly insert notification into Polocity_Notifications table with correct column/value pairing
         const insertNotificationQuery = `
-          INSERT INTO Polocity_Notifications (
-            TITLE, 
-            MESSAGE, 
-            STATUS,
-            ROLE
-          ) VALUES (?, ?, 'unread', 'admin')
+          INSERT INTO Polocity_Notifications
+          (TITLE, MESSAGE, STATUS, ROLE)
+          VALUES (?, ?, 'unread', ?)
         `;
         
         await new Promise((resolve, reject) => {
           sqldb.query(
             insertNotificationQuery,
-            [notificationTitle, notificationMessage],
+            [notificationTitle, notificationMessage, 'admin'],
             (err, result) => {
               if (err) {
                 console.error('Error creating notification:', err);
@@ -569,13 +566,9 @@ export const cancelOrder = async (req, res) => {
           );
         });
         
-        // Also try the imported function as a backup method
+        // Optional: Also use the imported function as a backup, but with correct parameter order
         try {
-          await createRoleNotificationInternal({
-            title: notificationTitle,
-            message: notificationMessage,
-            role: 'admin'
-          });
+          createRoleNotificationInternal('admin', notificationTitle, notificationMessage);
         } catch (notifError) {
           console.warn('Warning: createRoleNotificationInternal failed:', notifError.message);
           // Continue execution even if this fails as we already created the notification directly

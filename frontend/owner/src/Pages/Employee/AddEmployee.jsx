@@ -13,6 +13,78 @@ import {addEmployeeValidationSchema} from '../inputValidations';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
+// Define inline styles to avoid class conflicts
+const styles = {
+  inputGroup: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '20px',
+  },
+  inputIcon: {
+    position: 'absolute',
+    left: '15px',
+    color: '#23b893',
+    fontSize: '16px',
+    width: '20px',
+    textAlign: 'center',
+    zIndex: 1,
+    pointerEvents: 'none',
+    backgroundColor: 'transparent',
+  },
+  input: {
+    width: '100%',
+    padding: '12px 15px 12px 50px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: '#333',
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f8f9fa',
+    lineHeight: 1.5,
+    textOverflow: 'ellipsis',
+  },
+  usernameInput: {
+    width: '100%',
+    padding: '12px 15px 12px 50px',
+    paddingRight: '100px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: '#333',
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f8f9fa',
+    lineHeight: 1.5,
+    textOverflow: 'ellipsis',
+  },
+  generateBtn: {
+    position: 'absolute',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    backgroundColor: '#23b893',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '0.8rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    zIndex: 2,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  errorText: {
+    color: '#e74c3c',
+    fontSize: '12px',
+    display: 'block',
+    position: 'absolute',
+    bottom: '-18px',
+    left: '2px',
+    width: '100%',
+  }
+};
+
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
     employee_uname: '',
@@ -180,8 +252,8 @@ const AddEmployee = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Employee User Name</label>
-              <div className="input-group">
-                <FaIdCard className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaIdCard style={styles.inputIcon} />
                 <input
                   type="text"
                   name="employee_uname"
@@ -189,22 +261,23 @@ const AddEmployee = () => {
                   value={formData.employee_uname}
                   onChange={handleChange}
                   required
+                  style={styles.usernameInput}
                 />
                 <button 
                   type="button" 
-                  className="generate-btn"
+                  style={styles.generateBtn}
                   onClick={generateUsername}
                   title="Generate Username"
                 >
                   Generate
                 </button>
-                {errors.employee_uname && <span className="error-text">{errors.employee_uname}</span>}
+                {errors.employee_uname && <span style={styles.errorText}>{errors.employee_uname}</span>}
               </div>
             </div>
             <div className="form-group">
               <label>Email Address</label>
-              <div className="input-group">
-                <FaEnvelope className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaEnvelope style={styles.inputIcon} />
                 <input
                   type="email"
                   name="email"
@@ -212,17 +285,19 @@ const AddEmployee = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.email && <span className="error-text">{errors.email}</span>}
+                {errors.email && <span style={styles.errorText}>{errors.email}</span>}
               </div>
             </div>
           </div>
 
+          {/* First and Last Name */}
           <div className="form-row">
             <div className="form-group">
               <label>First Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaUser style={styles.inputIcon} />
                 <input
                   type="text"
                   name="f_name"
@@ -230,14 +305,15 @@ const AddEmployee = () => {
                   value={formData.f_name}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.f_name && <span className="error-text">{errors.f_name}</span>}
+                {errors.f_name && <span style={styles.errorText}>{errors.f_name}</span>}
               </div>
             </div>
             <div className="form-group">
               <label>Last Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaUser style={styles.inputIcon} />
                 <input
                   type="text"
                   name="l_name"
@@ -245,17 +321,19 @@ const AddEmployee = () => {
                   value={formData.l_name}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.l_name && <span className="error-text">{errors.l_name}</span>}
+                {errors.l_name && <span style={styles.errorText}>{errors.l_name}</span>}
               </div>
             </div>
           </div>
 
+          {/* Password fields */}
           <div className="form-row">
             <div className="form-group">
               <label>Password</label>
-              <div className="input-group">
-                <FaLock className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaLock style={styles.inputIcon} />
                 <input
                   type="password"
                   name="password"
@@ -263,14 +341,15 @@ const AddEmployee = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.password && <span className="error-text">{errors.password}</span>}
+                {errors.password && <span style={styles.errorText}>{errors.password}</span>}
               </div>
             </div>
             <div className="form-group">
               <label>Confirm Password</label>
-              <div className="input-group">
-                <FaLock className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaLock style={styles.inputIcon} />
                 <input
                   type="password"
                   name="com_password"
@@ -278,38 +357,42 @@ const AddEmployee = () => {
                   value={formData.com_password}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.com_password && <span className="error-text">{errors.com_password}</span>}
+                {errors.com_password && <span style={styles.errorText}>{errors.com_password}</span>}
               </div>
             </div>
           </div>
 
+          {/* Role selection */}
           <div className="form-row">
             <div className="form-group">
               <label>Role</label>
-              <div className="input-group">
-                <FaUserTag className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaUserTag style={styles.inputIcon} />
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 >
                   <option value="">Select role</option>
                   <option value="employee">Employee</option>
                   <option value="cashier">Cashier</option>
                   <option value="onlineorderchecker">Online Order Checker</option>
                 </select>
-                {errors.role && <span className="error-text">{errors.role}</span>}
+                {errors.role && <span style={styles.errorText}>{errors.role}</span>}
               </div>
             </div>
           </div>
 
+          {/* Phone numbers */}
           <div className="form-row">
             <div className="form-group">
               <label>Primary Phone</label>
-              <div className="input-group">
-                <FaPhone className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaPhone style={styles.inputIcon} />
                 <input
                   type="tel"
                   name="phone_1"
@@ -317,26 +400,29 @@ const AddEmployee = () => {
                   value={formData.phone_1}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.phone_1 && <span className="error-text">{errors.phone_1}</span>}
+                {errors.phone_1 && <span style={styles.errorText}>{errors.phone_1}</span>}
               </div>
             </div>
             <div className="form-group">
               <label>Secondary Phone (Optional)</label>
-              <div className="input-group">
-                <FaPhone className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaPhone style={styles.inputIcon} />
                 <input
                   type="tel"
                   name="phone_2"
                   placeholder="Enter secondary phone (optional)"
                   value={formData.phone_2}
                   onChange={handleChange}
+                  style={styles.input}
                 />
-                {errors.phone_2 && <span className="error-text">{errors.phone_2}</span>}
+                {errors.phone_2 && <span style={styles.errorText}>{errors.phone_2}</span>}
               </div>
             </div>
           </div>
 
+          {/* Action buttons */}
           <div className="form-actions">
             <button type="button" className="cancel-btn" onClick={handleCancel} disabled={isLoading}>Cancel</button>
             <button type="submit" className="submit-btn" disabled={isLoading}>
@@ -353,7 +439,7 @@ const AddEmployee = () => {
         </form>
       </div>
       
-      {/* Alert for success/error messages - positioned at bottom left */}
+      {/* Alert message */}
       <Snackbar 
         open={open} 
         autoHideDuration={6000} 
@@ -367,40 +453,6 @@ const AddEmployee = () => {
     </div>
   );
 };
-
-// Add this CSS to your AddEmployee.css file
-// .spinner-icon {
-//   animation: spin 1s linear infinite;
-//   margin-right: 8px;
-// }
-// 
-// @keyframes spin {
-//   from { transform: rotate(0deg); }
-//   to { transform: rotate(360deg); }
-// }
-// 
-// .generate-btn {
-//   position: absolute;
-//   right: 10px;
-//   top: 50%;
-//   transform: translateY(-50%);
-//   background-color: #4a90e2;
-//   color: white;
-//   border: none;
-//   border-radius: 4px;
-//   padding: 6px 12px;
-//   font-size: 0.8rem;
-//   cursor: pointer;
-//   transition: background-color 0.3s;
-// }
-// 
-// .generate-btn:hover {
-//   background-color: #3a7bc8;
-// }
-// 
-// .input-group {
-//   position: relative;
-// }
 
 const AuthenticatedAddEmployee = withAuth(AddEmployee);
 export default AuthenticatedAddEmployee;

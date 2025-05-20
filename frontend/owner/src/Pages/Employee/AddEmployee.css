@@ -32,6 +32,7 @@
 .form-group {
     flex: 1;
     position: relative;
+    margin-bottom: 22px; /* Increased to make room for error messages */
 }
 
 .form-group label {
@@ -46,6 +47,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    margin-bottom: 20px; /* Add space for error messages */
 }
 
 .input-icon {
@@ -53,18 +55,63 @@
     left: 12px;
     color: #23b893; /* Theme color */
     font-size: 16px;
+    width: 20px; /* Fixed width for icon */
+    text-align: center; /* Center the icon in its space */
+    z-index: 1; /* Ensure icon stays above the input */
+    pointer-events: none; /* Prevent icon from intercepting clicks */
 }
 
 .input-group input,
 .input-group select {
     width: 100%;
-    padding: 12px 12px 12px 40px;
+    padding: 12px 15px 12px 45px; /* Increased left padding */
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
     color: #333;
     transition: all 0.3s ease;
     background-color: #f8f9fa;
+    line-height: 1.5;
+}
+
+/* Create a more defined separation between icon and text */
+.input-group input::placeholder {
+    color: #aaa; /* Lighter color for placeholder */
+    opacity: 1; /* Ensure visibility */
+    transition: opacity 0.3s ease;
+}
+
+/* Make placeholder fade on focus */
+.input-group input:focus::placeholder {
+    opacity: 0.6;
+}
+
+/* Special handling for input with generate button */
+.input-group input[name="employee_uname"] {
+  padding-right: 100px; /* Increased padding for the generate button */
+}
+
+.generate-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #23b893; /* Match theme color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px; /* Slightly larger padding */
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2; /* Ensure button stays above everything */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.generate-btn:hover {
+  background-color: #1a8b6f;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .input-group input:focus,
@@ -122,6 +169,17 @@
     color: #333;
 }
 
+/* Spinner Icon */
+.spinner-icon {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .add-employee-container {
@@ -176,4 +234,15 @@ select {
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px;
+}
+
+/* Ensure error messages don't overlap */
+.error-text {
+  color: #e74c3c;
+  font-size: 12px;
+  display: block;
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  width: 100%;
 }

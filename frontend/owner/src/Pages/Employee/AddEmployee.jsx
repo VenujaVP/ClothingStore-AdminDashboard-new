@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import './AddEmployee.css';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaUserTag, FaIdCard, FaSpinner } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaUserTag, FaIdCard, FaSpinner, FaRandom } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import withAuth from '../withAuth';
@@ -38,6 +38,36 @@ const AddEmployee = () => {
     setFormData(prevState => ({
       ...prevState,
       [name]: value
+    }));
+  };
+
+  // Generate a random username based on first name, last name, and random characters
+  const generateUsername = () => {
+    const { f_name, l_name } = formData;
+    let username = '';
+    
+    // Use first name and last name if available
+    if (f_name && l_name) {
+      // Take first 3 characters of first name (or less if name is shorter)
+      const firstPart = f_name.substring(0, Math.min(3, f_name.length)).toLowerCase();
+      // Take first 3 characters of last name (or less if name is shorter)
+      const lastPart = l_name.substring(0, Math.min(3, l_name.length)).toLowerCase();
+      
+      // Combine with random numbers
+      const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit number
+      username = `${firstPart}${lastPart}${randomNum}`;
+    } else {
+      // Generate a completely random username if names aren't provided
+      const chars = 'abcdefghijklmnopqrstuvwxyz';
+      const randomChars = Array(6).fill().map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      username = `emp${randomChars}${randomNum}`;
+    }
+    
+    // Update the form data with the generated username
+    setFormData(prevState => ({
+      ...prevState,
+      employee_uname: username
     }));
   };
 
@@ -106,7 +136,14 @@ const AddEmployee = () => {
               console.log('Employee added successfully:', res.data);
               resetForm();
               setAlertSeverity("success");
-              setMessage(res.data.message || 'Employee added successfully!');
+              
+              // Customize message based on role
+              if (formData.role === 'onlineorderchecker') {
+                setMessage('Employee added successfully and login details sent to their email!');
+              } else {
+                setMessage('Employee added successfully!');
+              }
+              
               setOpen(true);
               // No navigation, just reset the form
             } else {
@@ -153,6 +190,14 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                <button 
+                  type="button" 
+                  className="generate-btn"
+                  onClick={generateUsername}
+                  title="Generate Username"
+                >
+                  Generate
+                </button>
                 {errors.employee_uname && <span className="error-text">{errors.employee_uname}</span>}
               </div>
             </div>
@@ -332,6 +377,29 @@ const AddEmployee = () => {
 // @keyframes spin {
 //   from { transform: rotate(0deg); }
 //   to { transform: rotate(360deg); }
+// }
+// 
+// .generate-btn {
+//   position: absolute;
+//   right: 10px;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   background-color: #4a90e2;
+//   color: white;
+//   border: none;
+//   border-radius: 4px;
+//   padding: 6px 12px;
+//   font-size: 0.8rem;
+//   cursor: pointer;
+//   transition: background-color 0.3s;
+// }
+// 
+// .generate-btn:hover {
+//   background-color: #3a7bc8;
+// }
+// 
+// .input-group {
+//   position: relative;
 // }
 
 const AuthenticatedAddEmployee = withAuth(AddEmployee);

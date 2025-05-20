@@ -8,7 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaUpload, FaTrash, FaArrowLeft, FaBox, FaInfoCircle, FaPaperPlane } from 'react-icons/fa';
-import withAuth from '../../withAuth'; // Fix the import path
+import withAuth from '../../withAuth';
 import './ReturnsOrders.css';
 
 const ReturnsOrders = ({ userId }) => {
@@ -22,6 +22,7 @@ const ReturnsOrders = ({ userId }) => {
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   // Function to handle consistent navigation
   const goToOrderDetails = () => {
@@ -33,8 +34,14 @@ const ReturnsOrders = ({ userId }) => {
     const fetchOrderDetails = async () => {
       setIsLoading(true);
       try {
-        // Log the parameters to debug
         console.log("Fetching order:", orderId, "for user:", userId);
+        
+        // First check if we have both orderId and userId
+        if (!orderId || !userId) {
+          setError("Missing order or user information");
+          setIsLoading(false);
+          return; // Don't navigate away automatically
+        }
         
         const response = await axios.get(`http://localhost:8082/api/user/order/${orderId}?userId=${userId}`);
         
@@ -45,32 +52,24 @@ const ReturnsOrders = ({ userId }) => {
           console.log("Order status:", orderData.order_status);
           
           if (orderData.order_status !== 'Delivered') {
-            toast.error('Only delivered orders can be returned');
-            goToOrderDetails();
-            return;
+            setError("This order is not eligible for return. Only delivered orders can be returned.");
+            setIsLoading(false);
+            return; // Don't navigate away automatically
           }
           
           setOrder(orderData);
         } else {
-          toast.error('Failed to fetch order details');
-          goToOrderDetails();
+          setError("Failed to fetch order details. The order may not exist or you don't have permission to access it.");
         }
       } catch (error) {
         console.error('Error fetching order details:', error);
-        toast.error('Error loading order data');
-        goToOrderDetails();
+        setError("Error loading order data. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (orderId && userId) {
-      fetchOrderDetails();
-    } else {
-      console.error("Missing orderId or userId", { orderId, userId });
-      toast.error('Missing order information');
-      goToOrderDetails();
-    }
+    fetchOrderDetails();
   }, [orderId, userId]);
 
   // Handle image upload
@@ -181,11 +180,12 @@ const ReturnsOrders = ({ userId }) => {
     );
   }
 
-  if (!order) {
+  if (error || !order) {
     return (
       <div className="return-order-error">
         <FaInfoCircle />
-        <h3>Order not found</h3>
+        <h3>{error || "Order not found"}</h3>
+        <p>Please check if this order is eligible for return or try again later.</p>
         <button 
           onClick={goToOrderDetails} 
           className="back-btn"

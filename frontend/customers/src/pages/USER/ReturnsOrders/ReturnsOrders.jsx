@@ -23,6 +23,11 @@ const ReturnsOrders = ({ userId }) => {
   const [previewImages, setPreviewImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Function to handle consistent navigation
+  const goToOrderDetails = () => {
+    window.location.href = '/user-order-details';
+  };
+
   // Fetch order details on component mount
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -41,19 +46,19 @@ const ReturnsOrders = ({ userId }) => {
           
           if (orderData.order_status !== 'Delivered') {
             toast.error('Only delivered orders can be returned');
-            window.location.href = '/user-order-details';
+            goToOrderDetails();
             return;
           }
           
           setOrder(orderData);
         } else {
           toast.error('Failed to fetch order details');
-          window.location.href = '/user-order-details';
+          goToOrderDetails();
         }
       } catch (error) {
         console.error('Error fetching order details:', error);
         toast.error('Error loading order data');
-        window.location.href = '/user-order-details';
+        goToOrderDetails();
       } finally {
         setIsLoading(false);
       }
@@ -64,9 +69,9 @@ const ReturnsOrders = ({ userId }) => {
     } else {
       console.error("Missing orderId or userId", { orderId, userId });
       toast.error('Missing order information');
-      window.location.href = '/user-order-details';
+      goToOrderDetails();
     }
-  }, [orderId, userId, navigate]);
+  }, [orderId, userId]);
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -154,8 +159,8 @@ const ReturnsOrders = ({ userId }) => {
       
       if (response.data.success) {
         toast.success('Return request submitted successfully');
-        // Use window.location for more reliable navigation
-        window.location.href = '/user-order-details';
+        // Use consistent navigation
+        goToOrderDetails();
       } else {
         toast.error(response.data.message || 'Failed to submit return request');
       }
@@ -182,7 +187,7 @@ const ReturnsOrders = ({ userId }) => {
         <FaInfoCircle />
         <h3>Order not found</h3>
         <button 
-          onClick={() => window.location.href = '/user-order-details'} 
+          onClick={goToOrderDetails} 
           className="back-btn"
         >
           <FaArrowLeft /> Back to Orders
@@ -194,7 +199,7 @@ const ReturnsOrders = ({ userId }) => {
   return (
     <div className="return-order-container">
       <div className="return-order-header">
-        <button onClick={() => navigate('/user-order-details')} className="back-btn">
+        <button onClick={goToOrderDetails} className="back-btn">
           <FaArrowLeft /> Back to Orders
         </button>
         <h2>Return Request</h2>
@@ -310,7 +315,7 @@ const ReturnsOrders = ({ userId }) => {
             <button 
               type="button" 
               className="cancel-btn"
-              onClick={() => navigate('/user-order-details')}
+              onClick={goToOrderDetails}
               disabled={isSubmitting}
             >
               Cancel

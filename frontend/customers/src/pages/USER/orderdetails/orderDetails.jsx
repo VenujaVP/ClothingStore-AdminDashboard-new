@@ -1020,7 +1020,7 @@ const OrderDetails = ({ userId }) => {
                       className="action-btn return-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Use full URL for more reliable navigation
+                        // Use window.location for consistent navigation
                         window.location.href = `/return-order/${order.order_id}`;
                       }}
                     >

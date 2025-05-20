@@ -246,7 +246,7 @@ const OrderDetailsModal = ({
                     className="action-btn return-btn"
                     onClick={() => {
                       closeOrderDetailsModal();
-                      // Use full URL to avoid navigation issues
+                      // Use window.location for consistent navigation
                       window.location.href = `/return-order/${order.order_id}`;
                     }}
                   >

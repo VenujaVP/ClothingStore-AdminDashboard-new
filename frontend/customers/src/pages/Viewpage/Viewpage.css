@@ -1,0 +1,196 @@
+/* General Styles */
+.vp-dashboard {
+  padding: 10px;
+  background-color: #f5f7fb;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.vp-loading, .vp-error {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-top: 15px;
+}
+
+/* Product Grid */
+.vp-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 15px; /* Spacing between cards */
+  padding: 15px; /* Padding around the grid */
+  justify-content: flex-start; /* Align cards to the start (left) */
+}
+
+/* Product Card */
+.vp-product-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Use full width of the grid cell */
+  min-height: 400px; /* Minimum height for normal size */
+}
+
+.vp-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Square Image Container */
+.vp-square-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* Creates a 1:1 aspect ratio (square) */
+  overflow: hidden;
+}
+
+.vp-product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the container without distortion */
+}
+
+/* Favorite Icon */
+.vp-favorite-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
+  transition: color 0.3s ease;
+  z-index: 2; /* Ensure the icon is above the image */
+}
+
+.vp-favorite-icon .vp-heart-icon-filled {
+  color: #ff0000; /* Red for filled heart */
+}
+
+.vp-favorite-icon:hover .vp-heart-icon {
+  color: #ff0000; /* Red on hover */
+}
+
+/* Shopping Cart Icon */
+.vp-cart-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #333;
+  transition: color 0.3s ease;
+  z-index: 2; /* Ensure the icon is above the image */
+}
+
+.vp-cart-icon:hover {
+  color: #23b893; /* Green on hover */
+}
+
+/* Product Details */
+.vp-product-details {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 150px; /* Minimum height for product details */
+}
+
+.vp-product-name {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vp-product-description {
+  font-size: 0.8rem;
+  color: #4f4f4f;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  flex-grow: 1; /* Allow description to grow and fill available space */
+}
+
+.vp-product-price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #23b893;
+  margin-bottom: 8px;
+}
+
+.vp-product-rating {
+  font-size: 0.9rem;
+  color: #FFD700;
+  margin-bottom: 8px;
+}
+
+.vp-star {
+  font-size: 0.9rem;
+  color: #989898;
+}
+
+.vp-star-filled {
+  color: #FFD700;
+}
+
+.vp-product-stock {
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.vp-in-stock {
+  color: #28a745;
+}
+
+.vp-sold-out {
+  color: #dc3545;
+}
+
+.vp-low-stock {
+  color: #ff0000;
+}
+
+.vp-wishlist-count {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0;
+}
+
+/* Pagination */
+.vp-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.vp-page-button {
+  padding: 8px 12px;
+  background: #23b893;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.vp-page-button:hover {
+  background: #1a8b6f;
+}
+
+.vp-page-button.vp-active {
+  background: #1a8b6f;
+}

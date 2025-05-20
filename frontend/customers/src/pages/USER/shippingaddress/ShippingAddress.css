@@ -1,0 +1,154 @@
+/* Shipping Address Page Styles */
+.shipping-address-page {
+    padding: 30px;
+    background-color: #f5f7fb;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 80px; /* Add margin to push content below the fixed navbar */
+}
+
+.shipping-header {
+    display: flex;
+    justify-content: space-between; /* Ensures space between title and button */
+    align-items: center; /* Vertically centers the title and button */
+    margin-bottom: 30px;
+}
+
+.shipping-header h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0; /* Removes default margin to align properly */
+}
+
+.add-address-btn {
+    background: #23b893;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-address-btn:hover {
+    background: #1da384;
+    transform: translateY(-2px);
+}
+
+/* Address List Styles */
+.address-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.address-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.address-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.address-details h3 {
+    color: #333;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.address-details p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.address-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-btn {
+    background: #23b893;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #1da384;
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #e60000;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .shipping-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .add-address-btn {
+        width: 100%; /* Full width on smaller screens */
+        text-align: center;
+    }
+
+    .address-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .shipping-address-page {
+        padding: 15px;
+        margin-top: 70px; /* Adjust margin for smaller screens */
+    }
+
+    .shipping-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .address-card {
+        padding: 15px;
+    }
+
+    .address-details h3 {
+        font-size: 1.2rem;
+    }
+
+    .address-details p {
+        font-size: 0.8rem;
+    }
+
+    .edit-btn, .delete-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

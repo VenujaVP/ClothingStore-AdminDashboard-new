@@ -1,0 +1,160 @@
+/* Shipping Address Page Styles */
+.shipping-address-page {
+    padding: 30px;
+    background-color: #f5f7fb;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.shipping-address-page h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #eef0f5;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #23b893;
+    outline: none;
+    box-shadow: 0 0 5px rgba(35, 184, 147, 0.5);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-with-prefix .prefix {
+    background: #eef0f5;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input {
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.submit-btn, .cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn {
+    background: #23b893;
+    color: white;
+}
+
+.submit-btn:hover {
+    background: #1da384;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #e60000;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .shipping-address-page {
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .submit-btn, .cancel-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .shipping-address-page h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    .submit-btn, .cancel-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}

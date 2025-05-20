@@ -1,0 +1,283 @@
+CREATE TABLE Polocity_Panel_Users (
+    ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
+    USERNAME VARCHAR(255) NOT NULL,
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,      -- User's email (unique)
+    F_NAME VARCHAR(255),                     -- First name
+    L_NAME VARCHAR(255),                     -- Last name
+    PHONE_NUM1 VARCHAR(15),
+    PHONE_NUM2 VARCHAR(15),
+    PASSWORD VARCHAR(255) NOT NULL,          -- User's password (hashed)
+    ROLE ENUM('admin', 'employee','cashier','onlineorderchecker') NOT NULL, -- Only allow these two role values 
+    resetToken VARCHAR(255),                 -- Password reset token (optional)
+    resetTokenExpiry DATETIME,               -- Expiry of reset token
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Account creation time
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated time
+    tempEmail VARCHAR(255);
+);
+
+
+CREATE TABLE owners (
+    ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,       -- User's email (unique)
+    F_NAME VARCHAR(255),                     -- Adjust VARCHAR length as needed
+    L_NAME VARCHAR(255);                      -- Adjust VARCHAR length as needed
+    PHONE_NUM VARCHAR(15) NOT NULL,           -- User's phone number (adjust length based on expected phone format)
+    PASSWORD VARCHAR(255) NOT NULL,           -- User's password (hashed)
+    resetToken VARCHAR(255),                  -- Password reset token (optional, used for password recovery)
+    resetTokenExpiry DATETIME,                -- Expiry date and time for the reset token
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for when the user account was created
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Timestamp for last update
+);
+
+CREATE TABLE EmployeeDetails (
+    EMPLOYEE_ID INT PRIMARY KEY AUTO_INCREMENT,
+    USERNAME VARCHAR(255) NOT NULL,
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,
+    F_NAME VARCHAR(50) NOT NULL,
+    L_NAME VARCHAR(50) NOT NULL,
+    PASSWORD VARCHAR(255) NOT NULL,
+    PHONE_NUM VARCHAR(15) NOT NULL,
+    ENTRY_DATE DATETIME NOT NULL,
+    ROLE VARCHAR(50) NOT NULL,
+    PHONE_NUM1 VARCHAR(15),
+    PHONE_NUM2 VARCHAR(15),
+    resetToken VARCHAR(255),
+    resetTokenExpiry DATETIME,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customers (
+    ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
+    NAME VARCHAR(255) NOT NULL,               -- User's name
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,       -- User's email (unique)
+    PHONE_NUM VARCHAR(15) NOT NULL,           -- User's phone number (adjust length based on expected phone format)
+    PASSWORD VARCHAR(255) NOT NULL,           -- User's password (hashed)
+    resetToken VARCHAR(255),                  -- Password reset token (optional, used for password recovery)
+    resetTokenExpiry DATETIME,                -- Expiry date and time for the reset token
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for when the user account was created
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Timestamp for last update
+);
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CREATE TABLE sizes (
+    SizeID INT AUTO_INCREMENT PRIMARY KEY,
+    SizeValue VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE colors (
+    ColorID INT AUTO_INCREMENT PRIMARY KEY,
+    ColorValue VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE product_table (
+    ProductID VARCHAR(10) PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    ProductDescription TEXT,
+    UnitPrice DECIMAL(10,2) NOT NULL,
+    DateAdded DATE NOT NULL,
+    ShippingWeight DECIMAL(5,2),  -- Weight in kg
+    Category1 VARCHAR(100) NOT NULL,
+    Category2 VARCHAR(100),
+    Category3 VARCHAR(100),
+    Material VARCHAR(100),
+    FabricType VARCHAR(100),
+    ReturnPolicy VARCHAR(50),
+    WishlistCount INT DEFAULT 0,
+    FinalRating DECIMAL(3,2) DEFAULT 0.0,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    IsActive BOOLEAN DEFAULT TRUE;       -- TRUE = active, FALSE = deactivated
+);
+
+CREATE TABLE product_variations (
+    VariationID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductID VARCHAR(10) NOT NULL, -- Match data type with `product_table`
+    SizeID INT NOT NULL,
+    ColorID INT NOT NULL,
+    units INT DEFAULT 0,            -- Renamed for consistency
+    FOREIGN KEY (ProductID) REFERENCES product_table(ProductID) ON DELETE CASCADE,
+    FOREIGN KEY (SizeID) REFERENCES sizes(SizeID),
+    FOREIGN KEY (ColorID) REFERENCES colors(ColorID)
+);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CREATE TABLE expenses (
+    expenses_id INT AUTO_INCREMENT PRIMARY KEY,
+    expense_custom_id VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    expenses_name VARCHAR(255) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CREATE TABLE cart_items (
+    cart_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    customerID int NOT NULL,          -- Direct user reference
+    ProductID VARCHAR(10) NOT NULL,        -- Matches product_table.ProductID
+    VariationID INT NOT NULL,              -- Matches product_variations.VariationID
+    quantity INT NOT NULL CHECK (quantity > 0),
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customerID) REFERENCES customers(ID),
+    FOREIGN KEY (ProductID) REFERENCES product_table(ProductID),
+    FOREIGN KEY (VariationID) REFERENCES product_variations(VariationID),
+    UNIQUE KEY unique_user_product_variation (customerID, ProductID, VariationID)
+);
+
+CREATE TABLE addresses (
+    address_id INT PRIMARY KEY AUTO_INCREMENT,
+    customerID INT NOT NULL,
+    contact_name VARCHAR(100) NOT NULL,
+    mobile_number VARCHAR(15) NOT NULL,
+    street_address VARCHAR(255) NOT NULL,
+    apt_suite_unit VARCHAR(50),
+    province VARCHAR(50) NOT NULL,
+    district VARCHAR(50) NOT NULL,
+    zip_code VARCHAR(10) NOT NULL,
+    is_default BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customerID) REFERENCES customers(ID) ON DELETE CASCADE
+);
+
+
+-- Delivery Options Table
+CREATE TABLE IF NOT EXISTS delivery_options (
+  delivery_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(255),
+  cost DECIMAL(10,2) NOT NULL,
+  estimated_days INT NOT NULL,
+  is_active BOOLEAN DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Payment Methods Table
+CREATE TABLE IF NOT EXISTS payment_methods (
+  payment_method_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(255),
+  is_online_payment BOOLEAN DEFAULT 0,
+  is_active BOOLEAN DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insert sample data for delivery options
+INSERT INTO delivery_options (name, description, cost, estimated_days)
+VALUES 
+  ('Standard Delivery', 'Delivery within 3-5 working days', 350.00, 5),
+  ('Express Delivery', 'Delivery within 1-2 working days', 600.00, 2),
+  ('Same Day Delivery', 'Delivery on the same day for Colombo area', 800.00, 0);
+
+-- Insert sample data for payment methods
+INSERT INTO payment_methods (name, description, is_online_payment)
+VALUES 
+  ('Cash on Delivery', 'Pay when you receive your items', 0),
+  ('Credit/Debit Card', 'Secure online payment with any major card', 1),
+  ('Mobile Wallet', 'Pay using popular mobile wallet apps', 1);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-- Payments table to track payment details
+CREATE TABLE payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  payment_method_id INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  payment_intent_id VARCHAR(255),
+  payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+  transaction_reference VARCHAR(255),
+  payment_date TIMESTAMP NULL, -- When the payment was completed
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id),
+  INDEX idx_payment_status (payment_status),
+  INDEX idx_payment_intent (payment_intent_id),
+  INDEX idx_payment_date (payment_date)
+);
+
+
+-- Create a proper master orders table with order_id as PRIMARY KEY
+CREATE TABLE orders (
+  order_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_item_id INT NOT NULL,
+  
+  -- Customer and Order Info
+  customer_id INT NOT NULL,
+  address_id INT NOT NULL,
+  delivery_option_id INT NOT NULL,
+  payment_option_id INT NOT NULL,
+  payment_id INT NULL,
+
+  -- Product Info
+  product_id VARCHAR(10) NOT NULL,
+  variation_id INT NOT NULL,
+  quantity INT NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  total_price DECIMAL(10,2) NOT NULL, -- unit_price * quantity
+
+  -- Delivery and Order Totals
+  delivery_fee DECIMAL(10,2) NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL, -- total_price + delivery_fee
+
+  order_status ENUM('Unpaid', 'To be Shipped', 'Shipped', 'Delivered', 'Failed', 'Cancelled', 'Processing', 'Refunded') DEFAULT 'Unpaid',
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  -- Foreign Keys
+  FOREIGN KEY (customer_id) REFERENCES customers(ID),
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+  FOREIGN KEY (delivery_option_id) REFERENCES delivery_options(delivery_id),
+  FOREIGN KEY (payment_option_id) REFERENCES payment_methods(payment_method_id),
+  FOREIGN KEY (payment_id) REFERENCES payments(payment_id),
+  FOREIGN KEY (product_id) REFERENCES product_table(ProductID),
+  FOREIGN KEY (variation_id) REFERENCES product_variations(VariationID),
+
+  -- Indexes
+  INDEX idx_customer (customer_id),
+  INDEX idx_product (product_id),
+  INDEX idx_variation (variation_id),
+  INDEX idx_order_status (order_status),
+  INDEX idx_payment (payment_id)
+);
+
+CREATE TABLE order_tracking ( 
+  tracking_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  tracking_number VARCHAR(100),
+  employee_id INT NOT NULL,  -- Employee who confirmed the order
+  delivery_date DATE,
+  courier_agent_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  -- Foreign Keys
+  FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+  FOREIGN KEY (employee_id) REFERENCES Polocity_Panel_Users(ID),
+
+  -- Indexes
+  INDEX idx_order_tracking (order_id),
+  INDEX idx_tracking_date (created_at)
+);
+
+
+-- Add this to your Database.txt file
+CREATE TABLE wishlists (
+  wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  product_id VARCHAR(10) NOT NULL,
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (customer_id) REFERENCES customers(ID) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES product_table(ProductID) ON DELETE CASCADE,
+  UNIQUE KEY unique_wishlist_entry (customer_id, product_id)
+);

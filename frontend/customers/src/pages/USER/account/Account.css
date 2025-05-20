@@ -1,0 +1,315 @@
+.account-page {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fb;
+    padding: 10px 20px 20px 20px;
+    gap: 20px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    background: white;
+    border-radius: 15px;
+    padding: 30px 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-title {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    padding-left: 15px;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #666;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background: #edf7f5;
+    color: #23b893;
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: #23b893;
+    color: white;
+    box-shadow: 0 4px 10px rgba(35, 184, 147, 0.5);
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    background: transparent; /* Changed from white to transparent */
+}
+
+/* User Section Styles */
+.user-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #23b893;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-details h2 {
+    padding: 8px 15px;
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.user-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #23b893;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding: 8px 15px;
+}
+
+.action-link:hover {
+    background: #edf7f5;
+    transform: translateY(-2px);
+}
+
+/* Orders Section Styles */
+.orders-section {
+    background: #f9f9f9;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.orders-header h3 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.view-all {
+    color: #4299e1;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.view-all:hover {
+    color: #3182ce;
+    text-decoration: underline;
+}
+
+/* Order status cards styles */
+.order-status-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.status-card:hover {
+    background-color: #edf2f7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.status-icon-wrapper {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-number {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+}
+
+.status-text {
+    font-size: 0.9rem;
+    color: #718096;
+    text-align: center;
+}
+
+/* Status icons colors */
+.status-icon.unpaid {
+    color: #d69e2e;
+}
+
+.status-icon.to-be-shipped {
+    color: #4299e1;
+}
+
+.status-icon.shipped {
+    color: #3182ce;
+}
+
+.status-icon.delivered {
+    color: #38a169;
+}
+
+.status-icon.processing {
+    color: #9c27b0;
+    animation: spin 1s linear infinite;
+}
+
+.status-icon.refunded {
+    color: #00bcd4;
+}
+
+.status-icon.failed {
+    color: #e53e3e;
+}
+
+.status-icon.cancelled {
+    color: #718096;
+}
+
+/* Loading and error states */
+.orders-loading, .orders-error, .no-orders {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    font-size: 1.5rem;
+    color: #4299e1;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-icon {
+    color: #e53e3e;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.retry-btn, .shop-now-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.retry-btn:hover, .shop-now-btn:hover {
+    background-color: #3182ce;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .order-status-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .account-page {
+        flex-direction: column-reverse;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    .main-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-status-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .user-actions {
+        justify-content: center;
+    }
+}

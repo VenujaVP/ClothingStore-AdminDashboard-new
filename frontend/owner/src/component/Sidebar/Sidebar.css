@@ -1,0 +1,338 @@
+.sidebar {
+    height: 100vh;
+    background: #f5f7fb;
+    width: 65px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px 0;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+    z-index: 1000;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    border-right: 1px solid #ddd;
+}
+
+.sidebar.expanded {
+    width: 250px;
+    padding: 20px 15px;
+    background: white;
+}
+
+.logo-container {
+    padding: 0;
+    margin-bottom: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 45px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.sidebar.expanded .logo {
+    width: 140px;
+}
+
+.menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    color: #666;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    justify-content: center;
+}
+
+.menu-item.has-dropdown {
+    position: relative;
+    justify-content: center;
+}
+
+.sidebar.expanded .menu-item.has-dropdown {
+    justify-content: space-between;
+    padding-right: 15px;
+}
+
+.icon {
+    font-size: 18px;
+    min-width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    transition: all 0.3s ease;
+    margin: 0;
+}
+
+.title {
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    display: none;
+}
+
+.sidebar.expanded .title {
+    opacity: 1;
+    display: block;
+}
+
+/* Active state for menu items */
+.menu-item.active {
+    background: linear-gradient(135deg, #23b893, #1a8b6f);
+    color: white;
+}
+
+.menu-item.active .icon {
+    color: white;
+}
+
+/* Hover effects */
+.menu-item:hover {
+    background-color: rgba(35, 184, 147, 0.2);
+    color: #23b893;
+}
+
+.menu-item:hover .icon {
+    color: #23b893;
+}
+
+.sidebar.expanded .menu-item:hover {
+    padding-left: 16px;
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        max-width: 300px;
+        height: 100vh;
+        background: white;
+        z-index: 1001;
+        padding: 80px 20px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+    }
+
+    .sidebar.mobile-open {
+        left: 0;
+    }
+
+    .mobile-close {
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        color: #666;
+        cursor: pointer;
+        padding: 8px;
+        z-index: 1002;
+    }
+
+    .menu-items {
+        margin-top: 20px;
+    }
+
+    .menu-item,
+    .menu-item.has-dropdown {
+        justify-content: flex-start;
+        padding: 12px 15px;
+    }
+
+    .title {
+        display: block !important;
+        opacity: 1 !important;
+        margin-left: 15px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .icon {
+        color: #666;
+        margin-right: 5px;
+        min-width: 24px;
+    }
+
+    /* Active and hover states */
+    .menu-item:hover,
+    .menu-item.active {
+        background-color: rgba(35, 184, 147, 0.1);
+    }
+
+    .menu-item:hover .icon,
+    .menu-item:hover .title,
+    .menu-item.active .icon,
+    .menu-item.active .title {
+        color: #23b893;
+    }
+
+    .dropdown-icon {
+        display: block;
+    }
+
+    .submenu {
+        padding-left: 20px;
+    }
+
+    .submenu-item {
+        padding: 12px;
+    }
+}
+
+/* Overlay styles */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Add transition for hover effects */
+.menu-item, .icon, .title {
+    transition: all 0.3s ease;
+}
+
+/* Add subtle shadow to active item */
+.menu-item.active {
+    box-shadow: 0 4px 10px rgba(35, 184, 147, 0.2);
+}
+
+/* Add these styles to your existing Sidebar.css */
+
+.menu-item-wrapper {
+    width: 100%;
+}
+
+.dropdown-icon {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    margin-left: auto;
+    color: #666;
+    display: none;
+}
+
+.sidebar.expanded .dropdown-icon {
+    display: block;
+}
+
+/* Collapsed state styles */
+.sidebar:not(.expanded):not(.mobile) .menu-item {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.sidebar:not(.expanded):not(.mobile) .menu-item.has-dropdown {
+    justify-content: center;
+}
+
+.sidebar:not(.expanded):not(.mobile) .icon {
+    margin: 0;
+}
+
+/* Expanded state styles */
+.sidebar.expanded .menu-item {
+    justify-content: flex-start;
+    padding: 12px 15px;
+}
+
+.submenu {
+    padding-left: 15px;
+    margin-top: 5px;
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #666;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    justify-content: flex-start;
+}
+
+.submenu-item:hover {
+    background-color: rgba(35, 184, 147, 0.1);
+    color: #23b893;
+}
+
+.submenu-item:hover .icon {
+    color: #23b893;
+}
+
+.submenu-item .icon {
+    font-size: 14px;
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    margin-right: 10px;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .menu-item,
+    .menu-item.has-dropdown {
+        justify-content: flex-start;
+        padding: 12px 15px;
+    }
+
+    .dropdown-icon {
+        display: block;
+    }
+
+    .submenu {
+        padding-left: 20px;
+    }
+
+    .submenu-item {
+        padding: 12px;
+    }
+}
+
+/* Collapsed sidebar styles */
+.sidebar:not(.expanded):not(.mobile) .dropdown-icon {
+    display: none;
+}
+
+.sidebar:not(.expanded):not(.mobile) .submenu {
+    display: none;
+}

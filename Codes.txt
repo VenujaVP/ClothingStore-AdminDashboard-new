@@ -1,0 +1,133 @@
+erDiagram
+    EMPLOYEE {
+        EMPLOYEE_ID int PK
+        USERNAME varchar 
+        EMAIL varchar
+        F_NAME varchar 
+        L_NAME varchar 
+        PASSWORD varchar
+        PHONE_NUM varchar
+        ENTRY_DATE datetime
+        ROLE varchar
+        PHONE_NUM1 varchar
+        PHONE_NUM2 varchar
+        resetToken varchar
+        resetTokenExpiry datetime
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+erDiagram
+    CUSTOMERS {
+        ID int PK
+        NAME varchar
+        EMAIL varchar
+        PHONE_NUM varchar
+        PASSWORD varchar
+        resetToken varchar
+        resetTokenExpiry datetime
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+erDiagram
+    ADMINS {
+        ID int PK
+        NAME varchar
+        EMAIL varchar
+        PHONE_NUM varchar
+        PASSWORD varchar
+        resetToken varchar
+        resetTokenExpiry datetime
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+erDiagram
+    EXPENSES {
+        expenses_id int PK
+        date date
+        expenses_name varchar
+        cost decimal
+        description text
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+erDiagram
+    ORDER {
+        expenses_id int PK
+        date date
+        expenses_name varchar
+        cost decimal
+        description text
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+ORDER
+
+Order_ID (Primary Key, indicated by the underline)
+userId
+ProductID
+VariationID
+Quentity
+payment_id
+TotalAmount (Derived Attribute, indicated by the dashed oval)
+OrderStatus
+PaymentStatus
+created_at (order timestamp)
+payment_at (payment comform timestamp)
+DeleveryVia
+Delivery Date(stimate)
+tracking_number
+CurrieremployeeName
+CurrieremployeeNum
+
+
+
+
+
+payments
+
+payment_id
+user_id
+total_amount
+payment_method
+payment_status
+transaction_id
+created_at
+
+
+erDiagram
+    CART_ITEMS {
+        int cart_item_id PK
+        int customerID FK
+        varchar ProductID FK
+        int VariationID FK
+        int quantity
+        timestamp added_at
+        timestamp updated_at
+    }
+
+
+erDiagram
+    ADDRESSES {
+        int address_id PK
+        int customerID FK
+        varchar contact_name
+        varchar mobile_number
+        varchar street_address
+        varchar apt_suite_unit
+        varchar province
+        varchar district
+        varchar zip_code
+        boolean is_default
+        timestamp created_at
+        timestamp updated_at
+    }

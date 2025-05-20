@@ -156,6 +156,7 @@ export const ownerCreateEmployee = (req, res) => {
     });
 };
 
+// 1. Updated getAllEmployees to exclude admin role
 export const getAllEmployees = (req, res) => {
   const sql = `
     SELECT 
@@ -170,6 +171,7 @@ export const getAllEmployees = (req, res) => {
       createdAt,
       updatedAt
     FROM Polocity_Panel_Users
+    WHERE ROLE != 'admin'
     ORDER BY ID DESC
   `;
   
@@ -255,6 +257,7 @@ export const getEmployeeById = (req, res) => {
   });
 };
 
+// 2. Updated updateEmployee to send email when role changes to onlineorderchecker
 export const updateEmployee = (req, res) => {
   const { id } = req.params;
   const { 
@@ -269,10 +272,10 @@ export const updateEmployee = (req, res) => {
   // Validate role is one of the allowed values
   const allowedRoles = ['admin', 'employee', 'cashier', 'onlineorderchecker'];
   if (role && !allowedRoles.includes(role)) {
-      return res.status(400).json({ 
-          message: "Invalid role. Must be admin, employee, cashier, or onlineorderchecker",
-          Status: "error" 
-      });
+    return res.status(400).json({ 
+      message: "Invalid role. Must be admin, employee, cashier, or onlineorderchecker",
+      Status: "error" 
+    });
   }
   
   if (!id) {
@@ -281,71 +284,169 @@ export const updateEmployee = (req, res) => {
       Status: 'error' 
     });
   }
+
+  // First, get the current employee details to check if role is changing
+  const getCurrentEmployeeQuery = "SELECT USERNAME, ROLE FROM Polocity_Panel_Users WHERE ID = ?";
   
-  // Check if email is changed and if so, check if the new email is already in use
-  const checkEmailQuery = "SELECT * FROM Polocity_Panel_Users WHERE EMAIL = ? AND ID != ?";
-  
-  sqldb.query(checkEmailQuery, [email, id], (emailCheckErr, emailCheckResult) => {
-    if (emailCheckErr) {
-      console.error("Error checking existing email:", emailCheckErr);
+  sqldb.query(getCurrentEmployeeQuery, [id], (getEmployeeErr, getEmployeeResult) => {
+    if (getEmployeeErr) {
+      console.error("Error fetching current employee details:", getEmployeeErr);
       return res.status(500).json({ 
-        message: "Error checking email in database",
+        message: "Error fetching current employee details",
         Status: "error" 
       });
     }
     
-    // If email already exists, return an error
-    if (emailCheckResult && emailCheckResult.length > 0) {
-      return res.status(409).json({ 
-        message: "Email address already registered to another employee. Please use a different email.", 
+    if (!getEmployeeResult || getEmployeeResult.length === 0) {
+      return res.status(404).json({ 
+        message: "Employee not found",
         Status: "error" 
       });
     }
     
-    // If email is unique or unchanged, proceed with update
-    const updateSql = `
-      UPDATE Polocity_Panel_Users
-      SET 
-        F_NAME = ?,
-        L_NAME = ?,
-        EMAIL = ?,
-        PHONE_NUM1 = ?,
-        PHONE_NUM2 = ?,
-        ROLE = ?
-      WHERE ID = ?
-    `;
+    const currentRole = getEmployeeResult[0].ROLE;
+    const username = getEmployeeResult[0].USERNAME;
     
-    const updateValues = [
-      first_name,
-      last_name,
-      email,
-      phone_1,
-      phone_2 || null,
-      role,
-      id
-    ];
+    // Check if email is changed and if so, check if the new email is already in use
+    const checkEmailQuery = "SELECT * FROM Polocity_Panel_Users WHERE EMAIL = ? AND ID != ?";
     
-    sqldb.query(updateSql, updateValues, (updateErr, updateResult) => {
-      if (updateErr) {
-        console.error("Error updating employee:", updateErr);
+    sqldb.query(checkEmailQuery, [email, id], (emailCheckErr, emailCheckResult) => {
+      if (emailCheckErr) {
+        console.error("Error checking existing email:", emailCheckErr);
         return res.status(500).json({ 
-          message: "Error updating employee in database",
-          Status: "error",
-          error: updateErr.message
-        });
-      }
-      
-      if (updateResult.affectedRows === 0) {
-        return res.status(404).json({ 
-          message: "Employee not found or no changes made",
+          message: "Error checking email in database",
           Status: "error" 
         });
       }
       
-      res.status(200).json({ 
-        message: "Employee updated successfully", 
-        Status: "success",
-        affectedRows: updateResult.affectedRows
+      // If email already exists, return an error
+      if (emailCheckResult && emailCheckResult.length > 0) {
+        return res.status(409).json({ 
+          message: "Email address already registered to another employee. Please use a different email.", 
+          Status: "error" 
+        });
+      }
+      
+      // If email is unique or unchanged, proceed with update
+      const updateSql = `
+        UPDATE Polocity_Panel_Users
+        SET 
+          F_NAME = ?,
+          L_NAME = ?,
+          EMAIL = ?,
+          PHONE_NUM1 = ?,
+          PHONE_NUM2 = ?,
+          ROLE = ?
+        WHERE ID = ?
+      `;
+      
+      const updateValues = [
+        first_name,
+        last_name,
+        email,
+        phone_1,
+        phone_2 || null,
+        role,
+        id
+      ];
+      
+      sqldb.query(updateSql, updateValues, (updateErr, updateResult) => {
+        if (updateErr) {
+          console.error("Error updating employee:", updateErr);
+          return res.status(500).json({ 
+            message: "Error updating employee in database",
+            Status: "error",
+            error: updateErr.message
+          });
+        }
+        
+        if (updateResult.affectedRows === 0) {
+          return res.status(404).json({ 
+            message: "Employee not found or no changes made",
+            Status: "error" 
+          });
+        }
+        
+        // Check if role changed to onlineorderchecker
+        if (role === 'onlineorderchecker' && currentRole !== 'onlineorderchecker') {
+          // Generate a new password
+          const newPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).toUpperCase().slice(-2) + Math.floor(Math.random() * 100);
+          
+          // Hash the new password
+          bcrypt.hash(newPassword, saltRounds, (hashErr, passwordHash) => {
+            if (hashErr) {
+              console.error("Error hashing password:", hashErr);
+              return res.status(500).json({ 
+                message: "Employee updated, but error generating new password",
+                Status: "success" 
+              });
+            }
+            
+            // Update the password in the database
+            const updatePasswordQuery = "UPDATE Polocity_Panel_Users SET PASSWORD = ? WHERE ID = ?";
+            
+            sqldb.query(updatePasswordQuery, [passwordHash, id], (passwordUpdateErr, passwordUpdateResult) => {
+              if (passwordUpdateErr) {
+                console.error("Error updating password:", passwordUpdateErr);
+                return res.status(500).json({ 
+                  message: "Employee updated, but error updating password",
+                  Status: "success" 
+                });
+              }
+              
+              // Send email with the new credentials
+              const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: process.env.EMAIL_USER,
+                  pass: process.env.EMAIL_PASS,
+                }
+              });
+              
+              // Define email content
+              const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Your Online Order Checker Account Details',
+                html: `
+                  <h1>Hello ${first_name} ${last_name},</h1>
+                  <p>Your role has been updated to Online Order Checker. Below are your login details:</p>
+                  <ul>
+                    <li><strong>Username:</strong> ${username}</li>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Password:</strong> ${newPassword}</li>
+                  </ul>
+                  <p>Please use these credentials to log in to your account.</p>
+                  <p>Best regards,<br>Your Company Name</p>
+                `
+              };
+              
+              // Send the email
+              transporter.sendMail(mailOptions, (emailErr, info) => {
+                if (emailErr) {
+                  console.error("Error sending email:", emailErr);
+                  return res.status(200).json({ 
+                    message: "Employee role updated to Online Order Checker but failed to send email", 
+                    Status: "Success" 
+                  });
+                }
+                
+                console.log("Email sent:", info.response);
+                res.status(200).json({ 
+                  message: "Employee role updated to Online Order Checker and login details sent via email", 
+                  Status: "Success"
+                });
+              });
+            });
+          });
+        } else {
+          // If role didn't change to onlineorderchecker, just return success
+          res.status(200).json({ 
+            message: "Employee updated successfully", 
+            Status: "success",
+            affectedRows: updateResult.affectedRows
+          });
+        }
       });
     });
   });

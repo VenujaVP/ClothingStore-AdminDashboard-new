@@ -473,3 +473,33 @@ input:checked + .toggle-label .toggle-switch {
 .alert-message button:hover {
   background-color: #3a4382;
 }
+
+/* ID Generation Button Styling */
+.id-generate-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #23b893;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.id-generate-btn:hover {
+  background-color: #1a8b6f;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure the input group has position relative for absolute positioning of button */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}

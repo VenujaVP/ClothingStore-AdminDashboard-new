@@ -95,6 +95,97 @@ const AddProducts = ({ isEditMode }) => {
     isActive: true
   });
 
+  const styles = {
+    inputGroup: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '10px',
+    },
+    inputIcon: {
+      position: 'absolute',
+      left: '15px',
+      color: '#23b893',
+      fontSize: '16px',
+      width: '20px',
+      textAlign: 'center',
+      zIndex: 1,
+      pointerEvents: 'none',
+      backgroundColor: 'transparent',
+    },
+    input: {
+      width: '100%',
+      padding: '12px 15px 12px 50px', // Increased left padding
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#333',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f8f9fa',
+      lineHeight: 1.5,
+    },
+    select: {
+      width: '100%',
+      padding: '12px 15px 12px 50px', 
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#333',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f8f9fa',
+      lineHeight: 1.5,
+      appearance: 'auto', // Ensure dropdown arrow appears
+    },
+    textarea: {
+      width: '100%',
+      padding: '12px 15px 12px 50px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#333',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f8f9fa',
+      minHeight: '100px',
+      resize: 'vertical',
+      lineHeight: 1.5,
+    },
+    idInput: {
+      width: '100%',
+      padding: '12px 15px 12px 50px',
+      paddingRight: '95px', // Space for the generate button
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#333',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f8f9fa',
+      lineHeight: 1.5,
+    },
+    generateBtn: {
+      position: 'absolute',
+      right: '10px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      backgroundColor: '#23b893',
+      color: 'white',
+      border: 'none',
+      borderRadius: '6px',
+      padding: '8px 12px',
+      fontSize: '0.8rem',
+      fontWeight: 500,
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      zIndex: 2,
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    errorMessage: {
+      color: '#e74c3c',
+      fontSize: '12px',
+      marginTop: '4px',
+      display: 'block',
+    }
+  };
+
 //---------------------------------------------------------------------------------------------------------------------------  
   // Handle Category Changes
   const handleChangeCategory1 = (e) => {
@@ -423,6 +514,28 @@ const AddProducts = ({ isEditMode }) => {
     }
   }, [open, alertSeverity, message, navigate]);
   
+  // Function to generate a unique product ID
+  const generateProductId = () => {
+    const date = new Date();
+    const year = date.getFullYear().toString().slice(2); // Get last 2 digits of year
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    // Generate random alphanumeric part
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomPart = '';
+    for (let i = 0; i < 4; i++) {
+      randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    const productId = `PRD-${year}${month}${day}-${randomPart}`;
+    
+    setFormData(prevState => ({
+      ...prevState,
+      product_id: productId
+    }));
+  };
+  
   // Component render
   return (
     <>
@@ -476,7 +589,20 @@ const AddProducts = ({ isEditMode }) => {
                       onChange={handleChange}
                       readOnly={isEditMode}
                       required
+                      style={{
+                        paddingRight: isEditMode ? '12px' : '85px' // Add space for the button
+                      }}
                     />
+                    {!isEditMode && (
+                      <button
+                        type="button"
+                        className="id-generate-btn"
+                        onClick={generateProductId}
+                        title="Generate Product ID"
+                      >
+                        Generate
+                      </button>
+                    )}
                   </div>
                   {errors.product_id && <span className="error-message">{errors.product_id}</span>}
                 </div>

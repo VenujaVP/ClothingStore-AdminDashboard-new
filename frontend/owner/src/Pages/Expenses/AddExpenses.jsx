@@ -27,6 +27,83 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 
+// Define inline styles to avoid class conflicts
+const styles = {
+  inputGroup: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
+  },
+  inputIcon: {
+    position: 'absolute',
+    left: '15px',
+    color: '#23b893',
+    fontSize: '16px',
+    zIndex: 2,
+    pointerEvents: 'none',
+    backgroundColor: 'transparent',
+  },
+  input: {
+    width: '100%',
+    padding: '12px 15px 12px 50px', // Increased left padding
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: '#333',
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f8f9fa',
+    lineHeight: 1.5,
+  },
+  idInput: {
+    width: '100%',
+    padding: '12px 15px 12px 50px',
+    paddingRight: '45px', // Extra space for generate button
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: '#333',
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f8f9fa',
+    lineHeight: 1.5,
+  },
+  textarea: {
+    width: '100%',
+    padding: '12px 15px 12px 50px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: '#333',
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f8f9fa',
+    minHeight: '100px',
+    resize: 'vertical',
+  },
+  generateBtn: {
+    position: 'absolute',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: '#23b893',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '5px',
+    borderRadius: '50%',
+    transition: 'all 0.3s ease',
+    zIndex: 2,
+  },
+  errorText: {
+    color: '#d32f2f',
+    fontSize: '12px',
+    marginTop: '4px',
+    display: 'block',
+  }
+};
+
 const AddExpenses = () => {
   const { id } = useParams(); // Get expense ID from URL if in edit mode
   const isEditMode = !!id; // Check if we're in edit mode
@@ -399,8 +476,8 @@ const AddExpenses = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Expense ID</label>
-              <div className="input-group">
-                <FaIdCard className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaIdCard style={styles.inputIcon} />
                 <input
                   type="text"
                   name="expense_custom_id"
@@ -409,12 +486,13 @@ const AddExpenses = () => {
                   onChange={handleChange}
                   onBlur={handleCustomIdBlur}
                   required
-                  disabled={isEditMode} // Make ID field read-only in edit mode
+                  disabled={isEditMode}
+                  style={styles.idInput}
                 />
                 {!isEditMode && (
                   <button 
                     type="button" 
-                    className="id-generate-btn" 
+                    style={styles.generateBtn}
                     onClick={generateCustomId}
                     title="Generate new ID"
                   >
@@ -422,23 +500,24 @@ const AddExpenses = () => {
                   </button>
                 )}
               </div>
-              {errors.expense_custom_id && <span className="error-text">{errors.expense_custom_id}</span>}
+              {errors.expense_custom_id && <span style={styles.errorText}>{errors.expense_custom_id}</span>}
               <small className="id-hint">
                 {isEditMode ? 'ID cannot be changed after creation' : 'A unique identifier for this expense. Auto-generated, but can be edited.'}
               </small>
             </div>
             <div className="form-group">
               <label>Date</label>
-              <div className="input-group">
-                <FaCalendar className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaCalendar style={styles.inputIcon} />
                 <input
                   type="date"
                   name="date"
                   value={formData.date}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.date && <span className="error-text">{errors.date}</span>}
+                {errors.date && <span style={styles.errorText}>{errors.date}</span>}
               </div>
             </div>
           </div>
@@ -446,8 +525,8 @@ const AddExpenses = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Expense Name</label>
-              <div className="input-group">
-                <FaTag className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaTag style={styles.inputIcon} />
                 <input
                   type="text"
                   name="expenses_name"
@@ -455,14 +534,15 @@ const AddExpenses = () => {
                   value={formData.expenses_name}
                   onChange={handleChange}
                   required
+                  style={styles.input}
                 />
-                {errors.expenses_name && <span className="error-text">{errors.expenses_name}</span>}
+                {errors.expenses_name && <span style={styles.errorText}>{errors.expenses_name}</span>}
               </div>
             </div>
             <div className="form-group">
               <label>Cost</label>
-              <div className="input-group">
-                <FaMoneyBillAlt className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaMoneyBillAlt style={styles.inputIcon} />
                 <input
                   type="number"
                   name="cost"
@@ -472,8 +552,9 @@ const AddExpenses = () => {
                   min="0"
                   step="0.01"
                   required
+                  style={styles.input}
                 />
-                {errors.cost && <span className="error-text">{errors.cost}</span>}
+                {errors.cost && <span style={styles.errorText}>{errors.cost}</span>}
               </div>
             </div>
           </div>
@@ -481,15 +562,16 @@ const AddExpenses = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Description</label>
-              <div className="input-group">
-                <FaInfoCircle className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaInfoCircle style={styles.inputIcon} />
                 <textarea
                   name="description"
                   placeholder="Enter Description"
                   value={formData.description}
                   onChange={handleChange}
+                  style={styles.textarea}
                 />
-                {errors.description && <span className="error-text">{errors.description}</span>}
+                {errors.description && <span style={styles.errorText}>{errors.description}</span>}
               </div>
             </div>
           </div>
@@ -497,16 +579,17 @@ const AddExpenses = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Upload Files (Max 2)</label>
-              <div className="input-group">
-                <FaFileUpload className="input-icon" />
+              <div style={styles.inputGroup}>
+                <FaFileUpload style={styles.inputIcon} />
                 <input
                   type="file"
                   name="files"
                   multiple
-                  accept="image/*,application/pdf" // Only accept images and PDFs
+                  accept="image/*,application/pdf"
                   onChange={handleFileChange}
                   className={(existingFiles.length + selectedFiles.length) >= 2 ? 'disabled' : ''}
                   disabled={(existingFiles.length + selectedFiles.length) >= 2}
+                  style={styles.input}
                 />
               </div>
               <small className="file-hint">

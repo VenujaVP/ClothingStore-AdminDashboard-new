@@ -103,6 +103,11 @@ router.delete('/employees/:id', deleteEmployee);
 
 // Expense routes
 //Add Expenses
+// Expense routes
+// Add this new route to match what the frontend is expecting
+router.post('/expenses', expenseUpload.array('files', 2), ownerExpensesAddValidate, ownerAddExpenses);
+// Keep your existing route for backward compatibility
+router.post('/owner-add-expenses', expenseUpload.array('files', 2), ownerExpensesAddValidate, ownerAddExpenses);
 router.post('/owner-add-expenses', expenseUpload.array('files', 2), ownerExpensesAddValidate, ownerAddExpenses);
 router.get('/check-expense-id/:customId', checkExpenseIdExists);
 

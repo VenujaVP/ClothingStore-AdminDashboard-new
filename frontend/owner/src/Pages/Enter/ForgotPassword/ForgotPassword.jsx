@@ -29,7 +29,7 @@ const ForgotPassword = () => {
         setResendSuccess(false); // Reset resend success message
   
         try {
-          const response = await fetch('http://localhost:8082/api/auth/owner-forgot-password', {
+          const response = await fetch('http://localhost:8082/api/auth/owner-employee-forgot-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email }),
@@ -135,15 +135,15 @@ const ForgotPassword = () => {
             ) : (
               <div className="success-message">
                 <div className="success-icon">✓</div>
-                <h2 style={{ color: 'black' }}>Check Your Inbox</h2>
+                <h2>Check Your Inbox</h2>
                 <div className="email-message">
-                  <p className="primary-text" style={{ color: 'black' }}>
+                  <p className="primary-text">
                     We sent a password reset link to:
                   </p>
-                  <p className="email-address" style={{ color: '#23b893' }}>
+                  <p className="email-address">
                     {email}
                   </p>
-                  <p className="secondary-text" style={{ color: 'black' }}>
+                  <p className="secondary-text">
                     Click the link in the email to reset your password.
                     If you don&apos;t see the email, check your spam folder.
                   </p>

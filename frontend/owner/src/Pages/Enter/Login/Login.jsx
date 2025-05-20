@@ -7,7 +7,7 @@ import './Login.css';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginValidationSchema } from '../validationSchema';
-import { FaEnvelope, FaLock, FaGoogle, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaGoogle, FaFacebookF, FaLinkedinIn, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Snackbar, Alert, Slide } from "@mui/material";
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -18,11 +18,16 @@ const Login = () => {
   const [open, setOpen] = useState(false); // For managing the Snackbar visibility
   const [message, setMessage] = useState(''); // To store the message displayed in the Snackbar
   const [alertSeverity, setAlertSeverity] = useState(''); // To handle success or error severity
+  const [showPassword, setShowPassword] = useState(false); // For toggling password visibility
 
   const handleClose = () => {
     setOpen(false); // Close the Snackbar
   };
-
+  
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
   function SlideTransition(props) {
     return <Slide {...props} direction="left" />;
   }
@@ -120,13 +125,13 @@ const Login = () => {
             <h2>Sign In</h2>
             <p className="text-muted">Please sign in to continue</p>
 
-            <div className="social-login">
+            {/* <div className="social-login">
                 <GoogleLogin
                   className="social-btn google"
                   // onClick={() => googleLogin()}
                 >
                 </GoogleLogin>
-            </div>
+            </div> */}
 
             <div className="divider">
               <span>or continue with</span>
@@ -153,13 +158,16 @@ const Login = () => {
                   <FaLock />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
+                <div className="password-toggle" onClick={togglePasswordVisibility}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
               {errors.password && <p className="error-text">{errors.password}</p>}
               </div>
 

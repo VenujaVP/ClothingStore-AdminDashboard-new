@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import './AddEmployee.css';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaUserTag, FaIdCard } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaUserTag, FaIdCard, FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import withAuth from '../withAuth';
@@ -30,6 +30,7 @@ const AddEmployee = () => {
   const [alertSeverity, setAlertSeverity] = useState('');
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -68,38 +69,47 @@ const AddEmployee = () => {
     navigate('/employees');
   };
 
+  const resetForm = () => {
+    setFormData({
+      employee_uname: '',
+      email: '',
+      f_name: '',
+      l_name: '',
+      password: '',
+      com_password: '',
+      phone_1: '',
+      phone_2: '',
+      role: ''
+    });
+    setErrors({});
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
+    // Create a validation object that conditionally checks phone_2 only if it's not empty
+    const dataToValidate = {...formData};
+    if (!dataToValidate.phone_2) {
+      delete dataToValidate.phone_2; // Remove from validation if empty
+    }
 
     // Validate the form data
     addEmployeeValidationSchema
-      .validate(formData, { abortEarly: false })
+      .validate(dataToValidate, { abortEarly: false })
       .then(() => {
         // Send data to the backend
         axios.post('http://localhost:8082/api/owner/owner-create-employee', formData)
           .then(res => {
+            setIsLoading(false);
             if (res.data && res.data.Status === "Success") {
               console.log('Employee added successfully:', res.data);
-              setFormData({
-                employee_uname: '',
-                email: '',
-                f_name: '',
-                l_name: '',
-                password: '',
-                com_password: '',
-                phone_1: '',
-                phone_2: '',
-                role: ''
-              });
+              resetForm();
               setAlertSeverity("success");
               setMessage(res.data.message || 'Employee added successfully!');
               setOpen(true);
-              
-              // Navigate to employees list after successful addition
-              setTimeout(() => {
-                navigate('/employees');
-              }, 2000);            
-          } else {
+              // No navigation, just reset the form
+            } else {
               console.error('Error adding employee:', res);
               setAlertSeverity("error");
               setMessage(res.data.message || 'An error occurred while adding employee');
@@ -107,6 +117,7 @@ const AddEmployee = () => {
             }
           })
           .catch(err => {
+            setIsLoading(false);
             console.error('Error:', err);
             setAlertSeverity('error');
             setMessage(err.response?.data?.message || 'Server error. Please try again.');
@@ -114,6 +125,7 @@ const AddEmployee = () => {
           });
       })
       .catch(err => {
+        setIsLoading(false);
         const validationErrors = {};
         err.inner.forEach(error => {
           validationErrors[error.path] = error.message; // Collect validation errors
@@ -271,7 +283,7 @@ const AddEmployee = () => {
                 <input
                   type="tel"
                   name="phone_2"
-                  placeholder="Enter secondary phone"
+                  placeholder="Enter secondary phone (optional)"
                   value={formData.phone_2}
                   onChange={handleChange}
                 />
@@ -281,14 +293,28 @@ const AddEmployee = () => {
           </div>
 
           <div className="form-actions">
-            <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
-            <button type="submit" className="submit-btn">Add Employee</button>
+            <button type="button" className="cancel-btn" onClick={handleCancel} disabled={isLoading}>Cancel</button>
+            <button type="submit" className="submit-btn" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <FaSpinner className="spinner-icon" /> 
+                  Processing...
+                </>
+              ) : (
+                'Add Employee'
+              )}
+            </button>
           </div>
         </form>
       </div>
       
-      {/* Alert for success/error messages */}
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      {/* Alert for success/error messages - positioned at bottom left */}
+      <Snackbar 
+        open={open} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
         <Alert onClose={handleClose} severity={alertSeverity} sx={{ width: '100%' }}>
           {message}
         </Alert>
@@ -296,6 +322,17 @@ const AddEmployee = () => {
     </div>
   );
 };
+
+// Add this CSS to your AddEmployee.css file
+// .spinner-icon {
+//   animation: spin 1s linear infinite;
+//   margin-right: 8px;
+// }
+// 
+// @keyframes spin {
+//   from { transform: rotate(0deg); }
+//   to { transform: rotate(360deg); }
+// }
 
 const AuthenticatedAddEmployee = withAuth(AddEmployee);
 export default AuthenticatedAddEmployee;

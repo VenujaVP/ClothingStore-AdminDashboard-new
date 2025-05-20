@@ -418,7 +418,7 @@ export const ownerEmployeerequestPasswordReset = (req, res) => {
             }
 
             // Step 4: Generate reset link
-            const resetLink = `http://localhost:5173/panel-reset-password/${resetToken}`;
+            const resetLink = `http://localhost:3002/panel-reset-password/${resetToken}`;
 
             // Step 5: Create email message
             const emailSubject = "Password Reset Request - POLOCITY";

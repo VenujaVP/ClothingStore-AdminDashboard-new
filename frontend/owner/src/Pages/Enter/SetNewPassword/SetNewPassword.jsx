@@ -45,7 +45,7 @@ const SetNewPassword = () => {
         setIsSubmitting(true);
 
         // Make API call to reset password
-        axios.post('http://localhost:8082/api/auth/owner-reset-password', {
+        axios.post('http://localhost:8082/api/auth/owner-employee-reset-password', {
           resetToken,
           newPassword: formData.newPassword,
           confirmNewPassword: formData.confirmNewPassword,
@@ -129,7 +129,7 @@ const SetNewPassword = () => {
               <p>Your password has been reset successfully. You can now log in with your new password.</p>
               <button
                 className="login-btn"
-                onClick={() => navigate('/user-login')}
+                onClick={() => navigate('/owner-login')}
               >
                 Go to Login
               </button>

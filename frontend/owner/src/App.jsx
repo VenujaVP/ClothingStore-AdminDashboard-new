@@ -47,7 +47,7 @@ const App = () => {
 
   const shouldDisplaySidebar = () => {
     const excludedPaths = ['/owner-login', '/owner-register', '/owner-forgot-password', '/owner-password-reset-finish', '/owner-check-your-email', '/onlineorderchecker-dashboard', '/', '/sample-quria-service'];
-    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/owner-reset-password');
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/panel-reset-password');
   };
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const App = () => {
           <Route path="/owner-login" element={<Login />} />
           <Route path="/owner-register" element={<Register />} />
           <Route path="/owner-forgot-password" element={<ForgotPassword />} />
-          <Route path="/owner-reset-password/:resetToken" element={<SetNewPassword />} />
+          <Route path="/panel-reset-password/:resetToken" element={<SetNewPassword />} />
           <Route path="/owner-password-reset-finish" element={<PasswordResetFinish />} />
 
           <Route path="/admin-settings" element={<AuthenticatedAdminSettings />} />

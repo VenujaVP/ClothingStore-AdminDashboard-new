@@ -2,6 +2,8 @@
 
 import sqldb from '../config/sqldb.js'; // Import your SQL database connection
 import { createNotificationInternal, createRoleNotificationInternal } from './ownerControllers_7_notifications.js';
+import { connectToDatabase } from '../config/mongodb.js'
+import { ObjectId } from 'mongodb';
 
 
 // Get all payment history for a user (no pagination)
@@ -620,5 +622,572 @@ export const cancelOrder = async (req, res) => {
   }
 };
 
+// Add these controller functions
 
+// Get specific order by ID for return form
+export const getUserOrderById = async (req, res) => {
+  const { orderId } = req.params;
+  const { userId } = req.query;
+  
+  if (!orderId || !userId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Order ID and User ID are required'
+    });
+  }
+  
+  try {
+    // Use existing query structure from getUserOrderHistory but with specific order ID
+    const query = `
+      SELECT 
+        o.order_id,
+        o.order_item_id,
+        o.customer_id,
+        o.product_id,
+        o.variation_id,
+        o.quantity,
+        o.unit_price,
+        o.total_price,
+        o.delivery_fee,
+        o.total_amount,
+        o.order_status,
+        o.created_at AS order_date,
+        o.updated_at AS last_updated,
+        
+        p.ProductName AS product_name,
+        p.ProductDescription AS product_description,
+        p.Category1 AS category1,
+        p.Category2 AS category2,
+        p.Category3 AS category3,
+        p.Material AS material,
+        p.FabricType AS fabric_type,
+        p.ReturnPolicy AS return_policy,
+        
+        s.SizeValue AS size_value,
+        c.ColorValue AS color_value,
+        
+        a.contact_name AS recipient_name,
+        a.street_address,
+        a.apt_suite_unit,
+        a.province,
+        a.district,
+        a.zip_code,
+        a.mobile_number AS phone_number
+      FROM 
+        orders o
+      LEFT JOIN 
+        product_table p ON o.product_id = p.ProductID
+      LEFT JOIN 
+        product_variations pv ON o.variation_id = pv.VariationID
+      LEFT JOIN 
+        sizes s ON pv.SizeID = s.SizeID
+      LEFT JOIN 
+        colors c ON pv.ColorID = c.ColorID
+      LEFT JOIN 
+        addresses a ON o.address_id = a.address_id
+      WHERE 
+        o.order_id = ? AND o.customer_id = ?
+    `;
+    
+    sqldb.query(query, [orderId, userId], (err, results) => {
+      if (err) {
+        console.error('Error fetching order details:', err);
+        return res.status(500).json({
+          success: false,
+          message: 'Server error while fetching order details'
+        });
+      }
+      
+      if (results.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found or does not belong to this user'
+        });
+      }
+      
+      res.status(200).json({
+        success: true,
+        order: results[0]
+      });
+    });
+  } catch (error) {
+    console.error('Error in getUserOrderById:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
 
+// Update the submitReturnRequest function:
+
+// Submit return request with images
+export const submitReturnRequest = async (req, res) => {
+  const { orderId, userId, returnReason, additionalInfo } = req.body;
+  const images = req.files;
+  
+  console.log('Received return request for order:', orderId);
+  console.log('Files received:', images ? images.length : 'No files');
+  console.log('Return reason:', returnReason);
+  
+  // Validation
+  if (!orderId || !userId || !returnReason) {
+    return res.status(400).json({
+      success: false,
+      message: 'Order ID, User ID, and return reason are required'
+    });
+  }
+  
+  if (!images || images.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'At least one image is required'
+    });
+  }
+  
+  let transactionStarted = false;
+  let imageIds = [];
+  
+  try {
+    // Check if order exists and belongs to user
+    const checkOrderQuery = `
+      SELECT o.order_id, o.order_status, o.product_id, p.ProductName 
+      FROM orders o
+      JOIN product_table p ON o.product_id = p.ProductID
+      WHERE o.order_id = ? AND o.customer_id = ?
+    `;
+    
+    const orderResult = await new Promise((resolve, reject) => {
+      sqldb.query(checkOrderQuery, [orderId, userId], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+    
+    if (orderResult.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found or does not belong to this user'
+      });
+    }
+    
+    const order = orderResult[0];
+    
+    // Check if order is in delivered status
+    if (order.order_status !== 'Delivered') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only delivered orders can be returned'
+      });
+    }
+    
+    // Check if return already exists for this order
+    const checkReturnQuery = `
+      SELECT return_id FROM order_returns
+      WHERE order_id = ?
+    `;
+    
+    const returnResult = await new Promise((resolve, reject) => {
+      sqldb.query(checkReturnQuery, [orderId], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+    
+    if (returnResult.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'A return request already exists for this order'
+      });
+    }
+    
+    // Start transaction
+    transactionStarted = true;
+    await new Promise((resolve, reject) => {
+      sqldb.beginTransaction(err => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    
+    // Process images and store in MongoDB
+    try {
+      // Connect to MongoDB
+      const { db } = await connectToDatabase();
+      const returnsCollection = db.collection('order_returns_images');
+      
+      // Create image objects for each uploaded file
+      const imagesArray = images.map((file, index) => ({
+        order_id: orderId,
+        image_name: file.originalname,
+        image_data: file.buffer.toString('base64'),
+        content_type: file.mimetype,
+        uploaded_at: new Date(),
+        is_primary: index === 0, // First image is primary by default
+        order: index + 1
+      }));
+      
+      // Store images in MongoDB
+      const imageResult = await returnsCollection.insertMany(imagesArray);
+      
+      // Get the inserted image IDs for reference in MySQL
+      imageIds = Object.values(imageResult.insertedIds).map(id => id.toString());
+      
+      console.log(`Successfully stored ${imagesArray.length} images to MongoDB for return request`);
+      console.log('Image IDs:', imageIds);
+    } catch (imgError) {
+      console.error('Error uploading images to MongoDB:', imgError);
+      throw new Error('Failed to upload images: ' + imgError.message);
+    }
+    
+    // Create return request record in MySQL with image references
+    const insertReturnQuery = `
+      INSERT INTO order_returns (
+        order_id, 
+        customer_id, 
+        return_reason, 
+        return_status,
+        admin_notes,
+        created_at
+      ) VALUES (?, ?, ?, 'Pending', ?, NOW())
+    `;
+    
+    const insertResult = await new Promise((resolve, reject) => {
+      sqldb.query(
+        insertReturnQuery, 
+        [orderId, userId, returnReason, additionalInfo || null],
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
+    });
+    
+    // Get the inserted return ID
+    const returnId = insertResult.insertId;
+    
+    // Update the MongoDB images with the return_id for easier querying
+    try {
+      const { db } = await connectToDatabase();
+      const returnsCollection = db.collection('order_returns_images');
+      
+      for (const imageId of imageIds) {
+        await returnsCollection.updateOne(
+          { _id: new ObjectId(imageId) },
+          { $set: { return_id: returnId.toString() } }
+        );
+      }
+    } catch (updateError) {
+      console.error('Error updating images with return_id:', updateError);
+      // Continue execution since we still have the order_id reference
+    }
+    
+    // Update order status to "Return Requested"
+    const updateOrderQuery = `
+      UPDATE orders
+      SET order_status = 'Return Requested', 
+          updated_at = NOW()
+      WHERE order_id = ?
+    `;
+    
+    await new Promise((resolve, reject) => {
+      sqldb.query(updateOrderQuery, [orderId], (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+    
+    // Create notification for admins about the return request
+    const notificationTitle = `Return Request: Order #${orderId}`;
+    const notificationMessage = `Customer has requested a return for order #${orderId} (${order.ProductName}). Reason: ${returnReason}`;
+    
+    const insertNotificationQuery = `
+      INSERT INTO Polocity_Notifications
+      (TITLE, MESSAGE, STATUS, ROLE)
+      VALUES (?, ?, 'unread', ?)
+    `;
+    
+    await new Promise((resolve, reject) => {
+      sqldb.query(
+        insertNotificationQuery,
+        [notificationTitle, notificationMessage, 'admin'],
+        (err, result) => {
+          if (err) {
+            console.error('Error creating notification:', err);
+            reject(err);
+          } else {
+            console.log(`Created admin notification ID: ${result.insertId}`);
+            resolve(result);
+          }
+        }
+      );
+    });
+    
+    // Also create a notification through the notification service
+    try {
+      createRoleNotificationInternal('admin', notificationTitle, notificationMessage);
+    } catch (notifError) {
+      console.warn('Warning: Secondary notification failed:', notifError.message);
+      // Continue execution as primary notification already created
+    }
+    
+    // Commit transaction
+    await new Promise((resolve, reject) => {
+      sqldb.commit(err => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    
+    res.status(200).json({
+      success: true,
+      message: 'Return request submitted successfully',
+      returnId: returnId,
+      imageCount: imageIds.length
+    });
+    
+  } catch (error) {
+    console.error('Error in submitReturnRequest:', error);
+    
+    // Rollback if transaction was started
+    if (transactionStarted) {
+      try {
+        await new Promise((resolve) => {
+          sqldb.rollback(() => {
+            console.log('Transaction rolled back due to error');
+            resolve();
+          });
+        });
+      } catch (rollbackErr) {
+        console.error('Error during rollback:', rollbackErr);
+      }
+    }
+    
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error during return request submission'
+    });
+  }
+};
+
+// Add function to retrieve return images
+
+// Get images for a specific order return
+export const getReturnImages = async (req, res) => {
+  const { orderId } = req.params;
+  
+  try {
+    // Connect to MongoDB
+    const { db } = await connectToDatabase();
+    const returnsCollection = db.collection('order_returns_images');
+    
+    // Find all images for this order
+    const images = await returnsCollection.find({ order_id: orderId }).toArray();
+    
+    if (!images || images.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No images found for this return request'
+      });
+    }
+    
+    // Process image data to return metadata only (not the actual image data)
+    const imageMetadata = images.map(img => ({
+      id: img._id,
+      order_id: img.order_id,
+      image_name: img.image_name,
+      content_type: img.content_type,
+      uploaded_at: img.uploaded_at
+    }));
+    
+    res.status(200).json({
+      success: true,
+      images: imageMetadata
+    });
+    
+  } catch (error) {
+    console.error('Error fetching return images:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching return images'
+    });
+  }
+};
+
+// Get a specific image by ID
+export const getReturnImageById = async (req, res) => {
+  const { imageId } = req.params;
+  
+  try {
+    // Connect to MongoDB
+    const { db } = await connectToDatabase();
+    const returnsCollection = db.collection('order_returns_images');
+    
+    // Find the specific image
+    const image = await returnsCollection.findOne({ _id: new ObjectId(imageId) });
+    
+    if (!image) {
+      return res.status(404).json({
+        success: false,
+        message: 'Image not found'
+      });
+    }
+    
+    // Convert the image data from base64 to a buffer
+    const imageBuffer = Buffer.from(image.image_data, 'base64');
+    
+    // Set the appropriate content type
+    res.set('Content-Type', image.content_type);
+    res.set('Content-Disposition', `inline; filename="${image.image_name}"`);
+    
+    // Send the image data
+    res.send(imageBuffer);
+    
+  } catch (error) {
+    console.error('Error fetching return image:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching return image'
+    });
+  }
+};
+
+// Add this new function to get all return requests for a user
+
+export const getUserReturnRequests = async (req, res) => {
+  const { userId } = req.params;
+  
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: 'User ID is required'
+    });
+  }
+  
+  try {
+    // Query to get all return requests with order details
+    const query = `
+      SELECT 
+        r.return_id,
+        r.order_id,
+        r.return_reason,
+        r.return_status,
+        r.admin_notes,
+        r.created_at,
+        r.updated_at,
+        
+        o.order_status,
+        o.product_id,
+        o.variation_id,
+        o.quantity,
+        o.total_amount,
+        o.created_at AS order_date,
+        
+        p.ProductName AS product_name,
+        
+        s.SizeValue AS size_value,
+        c.ColorValue AS color_value
+      FROM 
+        order_returns r
+      JOIN 
+        orders o ON r.order_id = o.order_id
+      LEFT JOIN 
+        product_table p ON o.product_id = p.ProductID
+      LEFT JOIN 
+        product_variations pv ON o.variation_id = pv.VariationID
+      LEFT JOIN 
+        sizes s ON pv.SizeID = s.SizeID
+      LEFT JOIN 
+        colors c ON pv.ColorID = c.ColorID
+      WHERE 
+        r.customer_id = ?
+      ORDER BY 
+        r.created_at DESC
+    `;
+    
+    const returnRequests = await new Promise((resolve, reject) => {
+      sqldb.query(query, [userId], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+    
+    // Fetch image info for each return request
+    const returnRequestsWithImages = await Promise.all(returnRequests.map(async (request) => {
+      try {
+        // Get images from MongoDB
+        const { db } = await connectToDatabase();
+        const returnsCollection = db.collection('order_returns_images');
+        
+        const images = await returnsCollection.find({ 
+          order_id: request.order_id.toString() 
+        }).toArray();
+        
+        // Generate image URLs
+        const imageUrls = images.map((image, index) => ({
+          id: image._id.toString(),
+          url: `/api/user/return-image/${image._id}`,
+          name: image.image_name,
+          contentType: image.content_type
+        }));
+        
+        // Format status description based on return status
+        let statusDescription;
+        switch (request.return_status) {
+          case 'Pending':
+            statusDescription = 'Your return request is being reviewed';
+            break;
+          case 'Approved':
+            statusDescription = 'Your return request has been approved';
+            break;
+          case 'Rejected':
+            statusDescription = 'Your return request was not approved';
+            break;
+          case 'Completed':
+            statusDescription = 'Your return has been processed and completed';
+            break;
+          default:
+            statusDescription = 'Status information unavailable';
+        }
+        
+        // Get formatted date
+        const formatDate = (dateString) => {
+          const date = new Date(dateString);
+          return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+        };
+        
+        return {
+          ...request,
+          formatted_created_at: formatDate(request.created_at),
+          formatted_order_date: formatDate(request.order_date),
+          status_description: statusDescription,
+          images: imageUrls
+        };
+      } catch (error) {
+        console.error(`Error fetching images for return request ${request.return_id}:`, error);
+        return {
+          ...request,
+          images: [],
+          error: 'Error fetching images'
+        };
+      }
+    }));
+    
+    res.status(200).json({
+      success: true,
+      returnRequests: returnRequestsWithImages,
+      count: returnRequestsWithImages.length
+    });
+    
+  } catch (error) {
+    console.error('Error in getUserReturnRequests:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching return requests'
+    });
+  }
+};

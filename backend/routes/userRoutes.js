@@ -25,6 +25,8 @@ import {
     getUserOrderHistory,
     getOrderStatusCounts,
     cancelOrder,
+    getUserOrderById,           // Add this
+    submitReturnRequest,getReturnImageById, getUserReturnRequests
 } from '../controllers/userAccountController.js';
 
 import {
@@ -40,6 +42,13 @@ import {
     getUserWishlist,
 } from '../controllers/userControllers_2.js'; 
 
+
+// Add the multer import for file uploads
+import multer from 'multer';
+const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
 
 const router = express.Router();
 
@@ -84,5 +93,12 @@ router.get('/payment-history/:userId', getAllUserPaymentHistory);
 router.get('/order-history/:userId', getUserOrderHistory);
 router.post('/orders/:orderId/cancel', cancelOrder);       // Order cancellation route
 
+// Add these routes at the end of the file before export default router
 
+// Return order routes
+// Return order routes
+router.get('/order/:orderId', getUserOrderById);
+router.post('/submit-return-request', upload.array('images', 3), submitReturnRequest);
+router.get('/return-requests/:userId', getUserReturnRequests);
+router.get('/return-image/:imageId', getReturnImageById);
 export default router;

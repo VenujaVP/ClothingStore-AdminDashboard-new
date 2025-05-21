@@ -1,4 +1,4 @@
-//controllers/ownerControllers_2.js
+//controllers/ownerControllers_2_products.js
 
 import sqldb from '../config/sqldb.js';
 import { connectToDatabase } from '../config/mongodb.js';

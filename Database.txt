@@ -294,3 +294,27 @@ CREATE TABLE Polocity_Notifications (
 
     FOREIGN KEY (USER_ID) REFERENCES Polocity_Panel_Users(ID) ON DELETE CASCADE
 );
+
+-- Order Returns Table
+CREATE TABLE order_returns (
+  return_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  customer_id INT NOT NULL,
+  return_reason VARCHAR(255) NOT NULL,
+  return_status ENUM('Pending', 'Approved', 'Rejected', 'Completed') DEFAULT 'Pending',
+  admin_notes TEXT,                                      -- Admin comments on return
+  processed_at DATETIME,                                 -- When return was processed
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  -- Foreign Keys
+  FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+  FOREIGN KEY (customer_id) REFERENCES customers(ID) ON DELETE CASCADE,
+
+  -- Indexes
+  INDEX idx_return_order (order_id),
+  INDEX idx_return_customer (customer_id),
+  INDEX idx_return_status (return_status),
+  INDEX idx_return_created (created_at)
+);
+

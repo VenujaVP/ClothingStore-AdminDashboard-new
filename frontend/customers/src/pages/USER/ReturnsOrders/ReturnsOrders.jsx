@@ -1,3 +1,5 @@
+//pages/USER/ReturnsOrders/ReturnsOrders.jsx
+
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
@@ -7,7 +9,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FaUpload, FaTrash, FaArrowLeft, FaBox, FaInfoCircle, FaPaperPlane } from 'react-icons/fa';
+import { 
+  FaUpload, FaTrash, FaArrowLeft, FaBox, FaInfoCircle,
+  FaPaperPlane, FaCheck, FaTimes, FaClock, FaHistory,
+  FaExclamationTriangle, FaFileAlt, FaImage 
+} from 'react-icons/fa';
 import withAuth from '../../withAuth';
 import './ReturnsOrders.css';
 
@@ -16,76 +22,110 @@ const ReturnsOrders = ({ userId }) => {
   const navigate = useNavigate();
   
   const [order, setOrder] = useState(null);
+  const [existingReturns, setExistingReturns] = useState([]);
+  const [showExistingReturns, setShowExistingReturns] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingReturns, setIsLoadingReturns] = useState(false);
   const [returnReason, setReturnReason] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Function to handle consistent navigation
   const goToOrderDetails = () => {
     window.location.href = '/user-order-details';
   };
 
+  // Toggle view between new return form and existing returns
+  const toggleView = () => {
+    if (!showExistingReturns && !existingReturns.length) {
+      fetchExistingReturns();
+    }
+    setShowExistingReturns(prev => !prev);
+  };
+
+  // Fetch existing return requests
+  const fetchExistingReturns = async () => {
+    if (!userId) return;
+    
+    setIsLoadingReturns(true);
+    try {
+      const response = await axios.get(`http://localhost:8082/api/user/return-requests/${userId}`);
+      if (response.data.success) {
+        setExistingReturns(response.data.returnRequests);
+      } else {
+        toast.error('Failed to load your return requests');
+      }
+    } catch (error) {
+      console.error('Error fetching return requests:', error);
+      toast.error('Error loading your return requests');
+    } finally {
+      setIsLoadingReturns(false);
+    }
+  };
+
   // Fetch order details on component mount
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
-      try {
-        console.log("Fetching order:", orderId, "for user:", userId);
-        
-        // First check if we have both orderId and userId
-        if (!orderId || !userId) {
-          setError("Missing order or user information");
-          setIsLoading(false);
-          return; // Don't navigate away automatically
-        }
-        
-        const response = await axios.get(`http://localhost:8082/api/user/order/${orderId}?userId=${userId}`);
-        
-        if (response.data.success) {
-          // Verify the order belongs to this user and is in delivered status
-          const orderData = response.data.order;
+      
+      // If we have an orderId, fetch specific order for return form
+      if (orderId) {
+        try {
+          console.log("Fetching order:", orderId, "for user:", userId);
           
-          console.log("Order status:", orderData.order_status);
-          
-          if (orderData.order_status !== 'Delivered') {
-            setError("This order is not eligible for return. Only delivered orders can be returned.");
+          if (!userId) {
+            setError("User information missing");
             setIsLoading(false);
-            return; // Don't navigate away automatically
+            return; 
           }
           
-          setOrder(orderData);
-        } else {
-          setError("Failed to fetch order details. The order may not exist or you don't have permission to access it.");
+          const response = await axios.get(`http://localhost:8082/api/user/order/${orderId}?userId=${userId}`);
+          
+          if (response.data.success) {
+            const orderData = response.data.order;
+            console.log("Order status:", orderData.order_status);
+            
+            if (orderData.order_status !== 'Delivered') {
+              setError("This order is not eligible for return. Only delivered orders can be returned.");
+            } else {
+              setOrder(orderData);
+            }
+          } else {
+            setError("Failed to fetch order details.");
+          }
+        } catch (error) {
+          console.error('Error fetching order details:', error);
+          setError("Error loading order data.");
         }
-      } catch (error) {
-        console.error('Error fetching order details:', error);
-        setError("Error loading order data. Please try again.");
-      } finally {
-        setIsLoading(false);
+      } 
+      // If no orderId, we're in the returns history view
+      else {
+        setShowExistingReturns(true);
+        await fetchExistingReturns();
       }
+      
+      setIsLoading(false);
     };
 
-    fetchOrderDetails();
+    fetchData();
   }, [orderId, userId]);
 
   // Handle image upload
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     
-    // Check if adding these files would exceed the limit
     if (images.length + files.length > 3) {
       toast.warning('Maximum 3 images allowed');
       return;
     }
     
-    // Check file types and sizes
     const validFiles = files.filter(file => {
       const isValid = file.type.startsWith('image/');
-      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+      const isValidSize = file.size <= 5 * 1024 * 1024;
       
       if (!isValid) toast.error(`${file.name} is not an image file`);
       if (!isValidSize) toast.error(`${file.name} exceeds 5MB limit`);
@@ -94,10 +134,8 @@ const ReturnsOrders = ({ userId }) => {
     });
     
     if (validFiles.length > 0) {
-      // Add new files to the existing ones
       setImages(prevImages => [...prevImages, ...validFiles]);
       
-      // Generate previews for the new files
       validFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -131,21 +169,18 @@ const ReturnsOrders = ({ userId }) => {
     setIsSubmitting(true);
     
     try {
-      // Create form data to send files
       const formData = new FormData();
       formData.append('orderId', orderId);
       formData.append('userId', userId);
       formData.append('returnReason', returnReason);
       formData.append('additionalInfo', additionalInfo);
       
-      // Append all images
-      images.forEach((image, index) => {
+      images.forEach((image) => {
         formData.append('images', image);
       });
       
       console.log("Submitting return request for order:", orderId);
       
-      // Submit return request
       const response = await axios.post(
         'http://localhost:8082/api/user/submit-return-request',
         formData,
@@ -158,7 +193,6 @@ const ReturnsOrders = ({ userId }) => {
       
       if (response.data.success) {
         toast.success('Return request submitted successfully');
-        // Use consistent navigation
         goToOrderDetails();
       } else {
         toast.error(response.data.message || 'Failed to submit return request');
@@ -171,19 +205,52 @@ const ReturnsOrders = ({ userId }) => {
     }
   };
 
+  // Open image in modal
+  const openImageModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+  };
+
+  // Close image modal
+  const closeImageModal = () => {
+    setSelectedImage(null);
+  };
+
+  // Get status badge color
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Pending': return 'var(--color-warning)';
+      case 'Approved': return 'var(--color-success)';
+      case 'Rejected': return 'var(--color-danger)';
+      case 'Completed': return 'var(--color-primary)';
+      default: return 'var(--color-text-secondary)';
+    }
+  };
+
+  // Get status icon
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Pending': return <FaClock />;
+      case 'Approved': return <FaCheck />;
+      case 'Rejected': return <FaTimes />;
+      case 'Completed': return <FaCheck />;
+      default: return <FaInfoCircle />;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="return-order-loading">
         <div className="loader"></div>
-        <p>Loading order details...</p>
+        <p>Loading...</p>
       </div>
     );
   }
 
-  if (error || !order) {
+  // Show error state
+  if (orderId && (error || !order)) {
     return (
       <div className="return-order-error">
-        <FaInfoCircle />
+        <FaExclamationTriangle size={32} />
         <h3>{error || "Order not found"}</h3>
         <p>Please check if this order is eligible for return or try again later.</p>
         <button 
@@ -196,6 +263,133 @@ const ReturnsOrders = ({ userId }) => {
     );
   }
 
+  // Show returns history view
+  if (showExistingReturns) {
+    return (
+      <div className="return-order-container return-history-container">
+        <div className="return-order-header">
+          {orderId && (
+            <button 
+              onClick={() => setShowExistingReturns(false)} 
+              className="toggle-btn"
+            >
+              <FaFileAlt /> New Return Request
+            </button>
+          )}
+          {!orderId && (
+            <button onClick={goToOrderDetails} className="back-btn">
+              <FaArrowLeft /> Back to Orders
+            </button>
+          )}
+          <h2>My Return Requests</h2>
+        </div>
+        
+        {isLoadingReturns ? (
+          <div className="loading-container">
+            <div className="loader"></div>
+            <p>Loading your return requests...</p>
+          </div>
+        ) : existingReturns.length === 0 ? (
+          <div className="no-returns-container">
+            <FaInfoCircle size={32} />
+            <h3>No Return Requests Found</h3>
+            <p>You haven't submitted any return requests yet.</p>
+          </div>
+        ) : (
+          <div className="returns-list">
+            {existingReturns.map(returnRequest => (
+              <div key={returnRequest.return_id} className="return-card">
+                <div className="return-header">
+                  <div className="return-id">Return #{returnRequest.return_id}</div>
+                  <div 
+                    className="return-status" 
+                    style={{ backgroundColor: getStatusColor(returnRequest.return_status) }}
+                  >
+                    {getStatusIcon(returnRequest.return_status)} {returnRequest.return_status}
+                  </div>
+                </div>
+                
+                <div className="return-content">
+                  <div className="return-product-info">
+                    <div className="product-icon">
+                      <FaBox size={32} />
+                    </div>
+                    <div className="product-details">
+                      <h4>{returnRequest.product_name}</h4>
+                      <div className="product-meta">
+                        <span>Order #{returnRequest.order_id}</span>
+                        <span>Quantity: {returnRequest.quantity}</span>
+                        {returnRequest.size_value && (
+                          <span>Size: {returnRequest.size_value}</span>
+                        )}
+                        {returnRequest.color_value && (
+                          <span>Color: {returnRequest.color_value}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="return-details">
+                    <div className="return-reason">
+                      <strong>Reason:</strong> {returnRequest.return_reason}
+                    </div>
+                    <div className="return-dates">
+                      <div><strong>Requested on:</strong> {returnRequest.formatted_created_at}</div>
+                      <div><strong>Order date:</strong> {returnRequest.formatted_order_date}</div>
+                    </div>
+                    
+                    {returnRequest.admin_notes && (
+                      <div className="admin-notes">
+                        <strong>Admin Notes:</strong> {returnRequest.admin_notes}
+                      </div>
+                    )}
+                    
+                    <div className="return-status-description">
+                      {returnRequest.status_description}
+                    </div>
+                  </div>
+                  
+                  {returnRequest.images && returnRequest.images.length > 0 && (
+                    <div className="return-images">
+                      <h5>Return Images</h5>
+                      <div className="image-thumbnails">
+                        {returnRequest.images.map((image, index) => (
+                          <div 
+                            key={index} 
+                            className="image-thumbnail" 
+                            onClick={() => openImageModal(image.url)}
+                          >
+                            <img 
+                              src={image.url} 
+                              alt={`Return image ${index + 1}`} 
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {/* Image modal */}
+        {selectedImage && (
+          <div className="image-modal-overlay" onClick={closeImageModal}>
+            <div className="image-modal-content" onClick={e => e.stopPropagation()}>
+              <button className="close-modal" onClick={closeImageModal}>
+                <FaTimes />
+              </button>
+              <img src={selectedImage} alt="Return item" />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Show return request form
   return (
     <div className="return-order-container">
       <div className="return-order-header">
@@ -203,6 +397,9 @@ const ReturnsOrders = ({ userId }) => {
           <FaArrowLeft /> Back to Orders
         </button>
         <h2>Return Request</h2>
+        <button onClick={toggleView} className="toggle-btn">
+          <FaHistory /> View My Returns
+        </button>
       </div>
       
       <div className="return-order-content">
@@ -223,7 +420,7 @@ const ReturnsOrders = ({ userId }) => {
                   <span>Color: {order.color_value}</span>
                 </div>
                 <div className="order-price">
-                  <span>Rs. {order.total_amount?.toFixed(2)}</span>
+                <span>Rs. {order.total_amount ? Number(order.total_amount).toFixed(2) : '0.00'}</span>
                 </div>
               </div>
             </div>

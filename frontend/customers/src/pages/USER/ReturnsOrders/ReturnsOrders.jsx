@@ -114,6 +114,11 @@ const ReturnsOrders = ({ userId }) => {
     fetchData();
   }, [orderId, userId]);
 
+  // Log the current view (return form or history)
+  useEffect(() => {
+    console.log('Current view:', showExistingReturns ? 'Return History' : 'Return Form');
+  }, [showExistingReturns]);
+
   // Handle image upload
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -402,6 +407,12 @@ const ReturnsOrders = ({ userId }) => {
         </button>
       </div>
       
+      {/* Debug info - remove after testing */}
+      <div style={{background: "#f8f9fa", padding: "10px", marginBottom: "15px"}}>
+        Debug: {order ? `Order loaded: ${order.order_id}` : 'No order data'} | 
+        Form view: {showExistingReturns ? 'No' : 'Yes'}
+      </div>
+      
       <div className="return-order-content">
         {/* Order Summary Section */}
         <div className="return-order-summary">
@@ -428,7 +439,7 @@ const ReturnsOrders = ({ userId }) => {
         </div>
         
         {/* Return Form Section */}
-        <form onSubmit={handleSubmit} className="return-form">
+        <form onSubmit={handleSubmit} className="return-form" style={{marginBottom: "100px"}}>
           <div className="form-section">
             <label htmlFor="returnReason">Reason for Return *</label>
             <select 
@@ -521,9 +532,21 @@ const ReturnsOrders = ({ userId }) => {
               type="submit" 
               className="submit-btn"
               disabled={isSubmitting}
+              style={{
+                backgroundColor: "#4a90e2",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "4px",
+                fontSize: "16px",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Return Request'}
-              {!isSubmitting && <FaPaperPlane />}
+              {isSubmitting ? 'Submitting...' : 'Submit Return Request'} 
+              {!isSubmitting && <span>📤</span>}
             </button>
           </div>
         </form>

@@ -125,7 +125,7 @@ const Account = ({ userId }) => {
           {/* <a href="#orders" className="nav-item">
             <FaShoppingCart /> Payment methods
           </a> */}
-          <a href="#refund" className="nav-item">
+          <a href="#refund" className="nav-item" onClick={() => handleNavigation('/return-order')}>
             <FaUndo /> Refund and Return
           </a>
           <a href="#feedback" className="nav-item">

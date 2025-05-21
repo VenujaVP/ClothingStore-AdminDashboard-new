@@ -41,7 +41,7 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   }, []);
 
   const menuItems = [
-    { icon: <FaHome />, title: 'Home', path: '/home' },
+    { icon: <FaHome />, title: 'Home', path: '/owner-dashboard' },
     {
       icon: <FaFolder />,
       title: 'Products',

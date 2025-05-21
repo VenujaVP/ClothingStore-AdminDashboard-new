@@ -2,6 +2,9 @@
 
 import express from 'express';
 import {placeOrder} from '../controllers/orderControllers.js';
+
+import { getDashboardData, getExpensesSummary } from '../controllers/userControllers_1_dashboard.js';
+
 import { 
     searchProducts, 
     filterProducts, 
@@ -101,4 +104,9 @@ router.get('/order/:orderId', getUserOrderById);
 router.post('/submit-return-request', upload.array('images', 3), submitReturnRequest);
 router.get('/return-requests/:userId', getUserReturnRequests);
 router.get('/return-image/:imageId', getReturnImageById);
+
+
+// Dashboard routes
+router.get('/dashboard-data', getDashboardData);
+router.get('/expenses-summary', getExpensesSummary);
 export default router;

@@ -34,29 +34,6 @@ const categories = {
     "Baby Clothing": [],
     "Kids' Footwear": [],
     "Bags & Accessories": ["Kids' Bags", "Kids' Watches", "Hats & Caps"],
-  },
-  "WATCHES": {
-    "Men's Watches": [],
-    "Women's Watches": [],
-  },
-  "FOOTWEAR": {
-    "Women's Footwear": [],
-    "Men's Footwear": [],
-  },
-  "ACCESSORIES": {
-    "Bags & Backpacks": ["Handbags", "Backpacks", "Travel Bags"],
-    "Belts": [],
-    "Wallets": [],
-    "Headwear": ["Caps", "Ice Caps", "Hats", "Beanies"],
-    "Jewelry": ["Necklaces", "Bracelets", "Earrings"],
-    "Perfumes & Fragrances": [],
-    "Wallets & Cardholders": [],
-    "Tie Pins & Cufflinks": []
-  },
-  "SALE & OFFERS": {
-    "Best Deals": [],
-    "Clearance Sale": [],
-    "Limited-Time Discounts": []
   }
 };
 

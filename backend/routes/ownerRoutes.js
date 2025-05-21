@@ -74,6 +74,9 @@ import {
   getUnreadCount
 } from '../controllers/ownerControllers_7_notifications.js';
 
+import { getDashboardStats } from '../controllers/ownerControllers_8_dashboard.js';
+
+
 const router = express.Router();
 
 // Configure multer to handle file uploads
@@ -195,5 +198,7 @@ router.put('/notifications/read-all', markAllNotificationsAsRead);
 router.post('/notifications', createNotification);
 router.post('/notifications/role', createRoleNotification);
 router.get('/notifications/unread-count', getUnreadCount);
+
+router.get('/dashboard-stats', getDashboardStats);
 
 export default router;

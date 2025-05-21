@@ -56,7 +56,7 @@ const Login = () => {
               // Simplified role-based navigation - only admin and onlineorderchecker
               switch(res.data.role) {
                 case 'admin':
-                  navigate('/products/list');
+                  navigate('/owner-dashboard');
                   break;
                 case 'onlineorderchecker':
                   navigate('/onlineorderchecker-dashboard');

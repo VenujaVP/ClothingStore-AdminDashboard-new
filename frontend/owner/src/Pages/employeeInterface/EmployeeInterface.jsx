@@ -39,20 +39,6 @@ const EmployeeInterface = ({ userId }) => {
                 <p>Today is {new Date().toLocaleDateString()}</p>
               </div>
             </div>
-            <div className="dashboard-stats">
-              <div className="stat-card">
-                <h4>Recent Orders</h4>
-                <p className="stat-value">24</p>
-              </div>
-              <div className="stat-card">
-                <h4>Pending Tasks</h4>
-                <p className="stat-value">7</p>
-              </div>
-              <div className="stat-card">
-                <h4>Completed Today</h4>
-                <p className="stat-value">12</p>
-              </div>
-            </div>
           </div>
         );
       case 'orders':

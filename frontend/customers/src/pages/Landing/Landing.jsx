@@ -273,7 +273,7 @@ const Landing = () => {
             data-category="WOMEN"
             onClick={() => handleCategoryClick('WOMEN')}
           >
-            <img src="women-category.jpg" alt="Women's Fashion" />
+            <img src="women-category.png" alt="Women's Fashion" />
             <div className="category-content">
               <h3>WOMEN</h3>
               <p>Elegant designs for every occasion</p>

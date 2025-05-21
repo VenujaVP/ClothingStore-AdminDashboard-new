@@ -3,7 +3,6 @@
 import express from 'express';
 import {placeOrder} from '../controllers/orderControllers.js';
 
-import { getDashboardData, getExpensesSummary } from '../controllers/userControllers_1_dashboard.js';
 
 import { 
     searchProducts, 
@@ -106,7 +105,5 @@ router.get('/return-requests/:userId', getUserReturnRequests);
 router.get('/return-image/:imageId', getReturnImageById);
 
 
-// Dashboard routes
-router.get('/dashboard-data', getDashboardData);
-router.get('/expenses-summary', getExpensesSummary);
+
 export default router;

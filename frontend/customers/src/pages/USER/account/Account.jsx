@@ -128,17 +128,12 @@ const Account = ({ userId }) => {
           <a href="#refund" className="nav-item" onClick={() => handleNavigation('/return-order')}>
             <FaUndo /> Refund and Return
           </a>
-          <a href="#feedback" className="nav-item">
-            <FaComment /> Feedback
-          </a>
+{/* 
           <a href="#settings" className="nav-item">
             <FaCog /> Settings
-          </a>
+          </a> */}
           <a href="#shipping" className="nav-item" onClick={() => handleNavigation('/user-shipping-address')}>
             <FaTruck /> Shipping Address
-          </a>
-          <a href="#messages" className="nav-item">
-            <FaEnvelope /> Message Center
           </a>
           <a href="#help" className="nav-item" onClick={() => handleNavigation('/user-shopping-cart')}>
             <FaQuestionCircle /> Help Center

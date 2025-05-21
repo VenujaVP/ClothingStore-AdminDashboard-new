@@ -35,14 +35,14 @@ const LandingPage = () => {
       <div className="brand-header">
         <div className="brand-logo">
           <FaTshirt className="brand-icon" />
-          <h1>PLOCITY</h1>
+          <h1>POLOCITY</h1>
         </div>
         <p className="brand-tagline">Clothing Management System</p>
       </div>
       
       <div className="landing-content">
         <div className="landing-header">
-          <h1>Welcome to PLOCITY Portal</h1>
+          <h1>Welcome to POLOCITY Portal</h1>
           <p className="subtitle">Streamline your clothing business operations with our comprehensive management system</p>
         </div>
 

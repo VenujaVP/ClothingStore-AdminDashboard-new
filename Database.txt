@@ -318,3 +318,5 @@ CREATE TABLE order_returns (
   INDEX idx_return_created (created_at)
 );
 
+INSERT INTO payment_methods (name, description, is_online_payment, is_active)
+VALUES ('Cash on Delivery', 'Pay when you receive your items', 0, 1);

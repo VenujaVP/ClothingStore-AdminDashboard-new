@@ -77,7 +77,6 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
     },
     { icon: <FaTable />, title: 'cancel Orders', path: '/cancel-orders' },
     { icon: <FaCog />, title: 'Settings', path: '/admin-settings' },
-    { icon: <FaEnvelope />, title: 'Messages', path: '/messages' },
   ];
 
   // Only show hover expand on desktop

@@ -492,26 +492,31 @@ const AddProducts = ({ isEditMode }) => {
   }, [open, alertSeverity, message, navigate]);
   
   // Function to generate a unique product ID
-  const generateProductId = () => {
-    const date = new Date();
-    const year = date.getFullYear().toString().slice(2); // Get last 2 digits of year
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    // Generate random alphanumeric part
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let randomPart = '';
-    for (let i = 0; i < 4; i++) {
-      randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    
-    const productId = `PRD-${year}${month}${day}-${randomPart}`;
-    
-    setFormData(prevState => ({
-      ...prevState,
-      product_id: productId
-    }));
-  };
+// Modify your existing generateProductId function
+const generateProductId = () => {
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(2); // Get last 2 digits of year
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  // Add hour and minute to make IDs more unique
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+  
+  // Generate random alphanumeric part
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let randomPart = '';
+  for (let i = 0; i < 4; i++) {
+    randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  const productId = `PRD-${year}${month}${day}-${hour}${minute}-${randomPart}`;
+  
+  setFormData(prevState => ({
+    ...prevState,
+    product_id: productId
+  }));
+};
   
   // Component render
   return (

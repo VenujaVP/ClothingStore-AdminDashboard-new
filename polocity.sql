@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2025 at 08:10 PM
+-- Generation Time: May 21, 2025 at 03:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -52,7 +52,8 @@ INSERT INTO `addresses` (`address_id`, `customerID`, `contact_name`, `mobile_num
 (3, 11, 'dsvsdvsb', '35636346', 'kdddddddddddddd', 'bbbbbbbbbbbbbbbbb', 'Northern Province', 'Kilinochchi', '433534', 0, '2025-05-13 04:10:11', '2025-05-13 04:10:57'),
 (4, 11, 'dddddddddddddddddddddddddd', 'e33333', 'vewwwwwwwwwwwwwwwww', 'fbsbszbf sz', 'North Western Province', 'Kurunegala', '333333', 1, '2025-05-13 04:10:57', '2025-05-13 04:10:57'),
 (5, 10, 'wenuuuuuuuuuuu', '080562562', 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', NULL, 'Eastern', 'ddsddfcdsxfs', '90289', 1, '2025-05-14 09:30:45', '2025-05-14 09:30:45'),
-(6, 12, 'kavuhs a', '3453535353', 'new', '6457675', 'North Central Province', 'Anuradhapura', '6545764', 0, '2025-05-16 15:01:32', '2025-05-16 15:01:32');
+(6, 12, 'kavuhs a', '3453535353', 'new', '6457675', 'North Central Province', 'Anuradhapura', '6545764', 0, '2025-05-16 15:01:32', '2025-05-16 15:01:32'),
+(8, 13, 'Venuja test', '703881642', 'AAAAAA, AAAAAA, AAAAAA,AAAAA', NULL, 'Uva Province', 'Badulla', '81700', 0, '2025-05-20 22:07:06', '2025-05-20 22:07:06');
 
 -- --------------------------------------------------------
 
@@ -127,9 +128,10 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`ID`, `NAME`, `EMAIL`, `PHONE_NUM`, `PASSWORD`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
-(10, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$7qj1TXVofEAHQNsrFcTQzeXN2FMGddFLHwwp5AqTTR3vzCEliTQJy', NULL, NULL, '2025-04-25 04:33:08', '2025-05-18 07:09:18'),
+(10, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$kCH/XllJK0oU2osicHQWTOjCY2G8kYMaPAnDDnGq3tGlM4S65uW8O', NULL, NULL, '2025-04-25 04:33:08', '2025-05-20 22:02:21'),
 (11, 'Venuja Prasanjith', 'airdropvpcryptonew@gmail.com', '5654765765', '$2b$10$gBc8cXL1Y4nMWZjUKhRHIOl9bv41W3C2hEKhwiDaTaOKJVm2vvcpG', NULL, NULL, '2025-05-13 04:07:00', '2025-05-13 04:07:00'),
-(12, 'kavisha Shehani', 'venujaeducation@gmail.com', '0725699508', '$2b$10$FaSL9XpbiW2qMKEtATQi4epFH.I7Wc4ayxb0AdwnDzhY2YB4tAN6a', NULL, NULL, '2025-05-16 15:00:36', '2025-05-16 15:00:36');
+(12, 'kavisha Shehani', 'venujaeducation@gmail.com', '0725699508', '$2b$10$FaSL9XpbiW2qMKEtATQi4epFH.I7Wc4ayxb0AdwnDzhY2YB4tAN6a', NULL, NULL, '2025-05-16 15:00:36', '2025-05-16 15:00:36'),
+(13, 'Venuja Prasanjith', 'vpprasanovaboost@gmail.com', '1111111111', '$2b$10$koSkkMcISl0Qn4Vy0bN/GO4hhaK50AmzKkGgE6xu1RikEWZ8UFErG', NULL, NULL, '2025-05-20 22:05:50', '2025-05-20 22:05:50');
 
 -- --------------------------------------------------------
 
@@ -209,7 +211,10 @@ CREATE TABLE `expenses` (
 --
 
 INSERT INTO `expenses` (`expenses_id`, `expense_custom_id`, `date`, `expenses_name`, `cost`, `description`, `createdAt`, `updatedAt`) VALUES
-(1, 'EXP-250517-2800', '2025-05-17', 'eerrrerre', 4000.00, '22222222222', '2025-05-17 10:06:29', '2025-05-17 10:06:29');
+(1, 'EXP-250517-2800', '2025-05-17', 'eerrrerre', 4000.00, '22222222222', '2025-05-17 10:06:29', '2025-05-17 10:06:29'),
+(3, 'EXP-250521-0817', '2025-05-20', 'name', 10000.00, 'n dcb cm db  kjbkedcbkedfbkb kek', '2025-05-20 20:14:32', '2025-05-20 20:14:32'),
+(4, 'EXP-250521-1040', '2025-05-20', 'fvsfbv dsb', 2888.00, 'gfdndfhnfdhn', '2025-05-20 20:15:07', '2025-05-20 20:15:07'),
+(5, 'EXP-250521-6151', '2025-05-20', 'name', 12.00, 'sfgbfdb', '2025-05-20 20:21:10', '2025-05-20 20:21:10');
 
 -- --------------------------------------------------------
 
@@ -245,7 +250,35 @@ INSERT INTO `orders` (`order_id`, `order_item_id`, `customer_id`, `address_id`, 
 (41, 2147483647, 10, 5, 1, 2, 17, '2w2w2w', 111, 4, 22.00, 88.00, 350.00, 438.00, 'Processing', '2025-05-18 06:56:18', '2025-05-19 09:05:41'),
 (42, 2147483647, 10, 5, 1, 2, 15, '2w2w2w', 112, 7, 22.00, 154.00, 350.00, 504.00, 'Processing', '2025-05-18 08:10:43', '2025-05-19 09:04:55'),
 (43, 2147483647, 10, 5, 1, 2, 16, '2w2w2w', 111, 6, 22.00, 132.00, 350.00, 482.00, 'Refunded', '2025-05-18 19:25:21', '2025-05-19 17:03:00'),
-(44, 2147483647, 10, 5, 1, 2, NULL, '2w2w2w', 112, 2, 22.00, 44.00, 350.00, 394.00, 'Delivered', '2025-05-19 07:02:29', '2025-05-19 14:33:26');
+(44, 2147483647, 10, 5, 1, 2, NULL, '2w2w2w', 112, 2, 22.00, 44.00, 350.00, 394.00, 'Delivered', '2025-05-19 07:02:29', '2025-05-19 14:33:26'),
+(45, 2147483647, 13, 8, 1, 2, NULL, '2w2w2w', 111, 4, 22.00, 88.00, 350.00, 438.00, 'Cancelled', '2025-05-20 22:07:20', '2025-05-20 22:08:07'),
+(46, 2147483647, 13, 8, 1, 2, 18, 'P001', 97, 4, 19.00, 76.00, 350.00, 426.00, 'Processing', '2025-05-20 22:08:44', '2025-05-20 22:39:09'),
+(47, 2147483647, 13, 8, 1, 2, 19, '2w2w2w', 111, 4, 22.00, 88.00, 350.00, 438.00, '', '2025-05-20 22:10:50', '2025-05-21 00:48:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_returns`
+--
+
+CREATE TABLE `order_returns` (
+  `return_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `return_reason` varchar(255) NOT NULL,
+  `return_status` enum('Pending','Approved','Rejected','Completed') DEFAULT 'Pending',
+  `admin_notes` text DEFAULT NULL,
+  `processed_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_returns`
+--
+
+INSERT INTO `order_returns` (`return_id`, `order_id`, `customer_id`, `return_reason`, `return_status`, `admin_notes`, `processed_at`, `created_at`, `updated_at`) VALUES
+(1, 47, 13, 'Wrong Size', 'Pending', 'aaaaaaaaa', NULL, '2025-05-21 00:48:12', '2025-05-21 00:48:12');
 
 -- --------------------------------------------------------
 
@@ -295,10 +328,8 @@ CREATE TABLE `owners` (
 --
 
 INSERT INTO `owners` (`ID`, `EMAIL`, `PHONE_NUM`, `PASSWORD`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`, `F_NAME`, `L_NAME`) VALUES
-(10, 'venujagamage2002@gmail.com', '1234567890', '$2b$10$kCH/XllJK0oU2osicHQWTOjCY2G8kYMaPAnDDnGq3tGlM4S65uW8O', NULL, NULL, '2025-05-16 08:06:01', '2025-05-16 08:06:29', 'John', 'Doe'),
-(11, 'jane.smith@example.com', '0987654321', 'hashed_password_2', NULL, NULL, '2025-05-16 08:06:01', '2025-05-16 08:06:01', 'Jane', 'Smith'),
-(12, 'michael.brown@example.com', '1122334455', 'hashed_password_3', 'resetToken123', '2025-06-01 12:00:00', '2025-05-16 08:06:01', '2025-05-16 08:06:01', 'Michael', 'Brown'),
-(13, 'emily.jones@example.com', '6677889900', 'hashed_password_4', NULL, NULL, '2025-05-16 08:06:01', '2025-05-16 08:06:01', 'Emily', 'Jones');
+(10, 'venujagamage2002@gmail.com', '1234567890', '$2b$10$kCH/XllJK0oU2osicHQWTOjCY2G8kYMaPAnDDnGq3tGlM4S65uW8O', NULL, NULL, '2025-05-16 08:06:01', '2025-05-20 18:29:18', 'venuja', '1'),
+(14, 'vpprasanovaboost@gmail.com\n', '2746783547', '$2b$10$kCH/XllJK0oU2osicHQWTOjCY2G8kYMaPAnDDnGq3tGlM4S65uW8O', NULL, NULL, '2025-05-20 18:32:34', '2025-05-20 18:33:20', 'venuja', '2');
 
 -- --------------------------------------------------------
 
@@ -325,7 +356,9 @@ CREATE TABLE `payments` (
 INSERT INTO `payments` (`payment_id`, `payment_method_id`, `amount`, `payment_intent_id`, `payment_status`, `transaction_reference`, `payment_date`, `created_at`, `updated_at`) VALUES
 (15, 2, 504.00, 'pi_3RQ2JK2aAuwJgETx052IqGZ6', 'completed', NULL, '2025-05-18 08:11:07', '2025-05-18 08:11:06', '2025-05-18 08:11:07'),
 (16, 2, 482.00, 'pi_3RQCqI2aAuwJgETx0aNZPIbM', '', NULL, '2025-05-18 19:25:52', '2025-05-18 19:25:51', '2025-05-19 17:03:00'),
-(17, 2, 438.00, 'pi_3RQCsm2aAuwJgETx0FrFMTj2', 'completed', NULL, '2025-05-18 19:28:26', '2025-05-18 19:28:25', '2025-05-18 19:28:26');
+(17, 2, 438.00, 'pi_3RQCsm2aAuwJgETx0FrFMTj2', 'completed', NULL, '2025-05-18 19:28:26', '2025-05-18 19:28:25', '2025-05-18 19:28:26'),
+(18, 2, 426.00, 'pi_3RQyLO2aAuwJgETx16EVfcry', 'completed', NULL, '2025-05-20 22:09:07', '2025-05-20 22:09:06', '2025-05-20 22:09:07'),
+(19, 2, 438.00, 'pi_3RQyNK2aAuwJgETx1DGR430J', 'completed', NULL, '2025-05-20 22:11:08', '2025-05-20 22:11:07', '2025-05-20 22:11:08');
 
 -- --------------------------------------------------------
 
@@ -350,6 +383,35 @@ CREATE TABLE `payment_methods` (
 INSERT INTO `payment_methods` (`payment_method_id`, `name`, `description`, `is_online_payment`, `is_active`, `created_at`, `updated_at`) VALUES
 (1, 'Cash on Delivery', 'Pay when you receive your items', 0, 1, '2025-05-14 13:03:55', '2025-05-14 13:03:55'),
 (2, 'Credit/Debit Card', 'Secure online payment with any major card', 1, 1, '2025-05-14 13:03:55', '2025-05-14 13:03:55');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polocity_notifications`
+--
+
+CREATE TABLE `polocity_notifications` (
+  `ID` int(11) NOT NULL,
+  `USER_ID` int(11) DEFAULT NULL,
+  `TITLE` varchar(255) NOT NULL,
+  `MESSAGE` text NOT NULL,
+  `STATUS` enum('unread','read') DEFAULT 'unread',
+  `ROLE` enum('admin','onlineorderchecker') DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `readAt` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `polocity_notifications`
+--
+
+INSERT INTO `polocity_notifications` (`ID`, `USER_ID`, `TITLE`, `MESSAGE`, `STATUS`, `ROLE`, `createdAt`, `readAt`) VALUES
+(1, NULL, 'Order #46 Cancelled - Refund Required', 'Customer Venuja Prasanjith cancelled order #46 for Floral Printed Blouse that was already paid. Amount: Rs. 426.00. Please process the refund.', 'unread', 'admin', '2025-05-20 22:27:52', NULL),
+(2, NULL, 'Order #46 Cancelled - Refund Required', 'Customer Venuja Prasanjith cancelled order #46 for Floral Printed Blouse that was already paid. Amount: Rs. 426.00. Please process the refund.', 'unread', 'admin', '2025-05-20 22:35:59', NULL),
+(3, NULL, 'Order #46 Cancelled - Refund Required', 'Customer Venuja Prasanjith cancelled order #46 for Floral Printed Blouse that was already paid. Amount: Rs. 426.00. Please process the refund.', 'unread', 'admin', '2025-05-20 22:39:09', NULL),
+(4, NULL, 'Order #46 Cancelled - Refund Required', 'Customer Venuja Prasanjith cancelled order #46 for Floral Printed Blouse that was already paid. Amount: Rs. 426.00. Please process the refund.', 'unread', 'admin', '2025-05-20 22:39:09', NULL),
+(5, NULL, 'Return Request: Order #47', 'Customer has requested a return for order #47 (wwwwww). Reason: Wrong Size', 'unread', 'admin', '2025-05-21 00:48:12', NULL),
+(6, NULL, 'Return Request: Order #47', 'Customer has requested a return for order #47 (wwwwww). Reason: Wrong Size', 'unread', 'admin', '2025-05-21 00:48:13', NULL);
 
 -- --------------------------------------------------------
 
@@ -379,8 +441,9 @@ CREATE TABLE `polocity_panel_users` (
 --
 
 INSERT INTO `polocity_panel_users` (`ID`, `USERNAME`, `EMAIL`, `F_NAME`, `L_NAME`, `PHONE_NUM1`, `PHONE_NUM2`, `PASSWORD`, `ROLE`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`, `tempEmail`) VALUES
-(3, 'venujaeducation913', 'venujaeducation@gmail.com', 'Venuja', 'Prasanjith', '1111111111', NULL, '$2b$10$7qj1TXVofEAHQNsrFcTQzeXN2FMGddFLHwwp5AqTTR3vzCEliTQJy', 'admin', NULL, NULL, '2025-05-18 09:34:34', '2025-05-19 09:57:52', NULL),
-(4, 'fdgbedgb', 'venujagamage2002@gmail.com', 'gemaaa', 'dddddddddd', '2222222222', '2222222227', '$2b$10$7qj1TXVofEAHQNsrFcTQzeXN2FMGddFLHwwp5AqTTR3vzCEliTQJy', 'onlineorderchecker', NULL, NULL, '2025-05-18 09:35:19', '2025-05-19 09:57:57', NULL);
+(3, 'venuja1', 'venujaeducation@gmail.com', 'Venuja', 'Employee', '1111111111', '0703881642', '$2b$10$7qj1TXVofEAHQNsrFcTQzeXN2FMGddFLHwwp5AqTTR3vzCEliTQJy', 'onlineorderchecker', NULL, NULL, '2025-05-18 09:34:34', '2025-05-20 19:56:30', NULL),
+(4, 'venuja2', 'venujagamage2002@gmail.com', 'Venuja', 'Admin', '2222222222', '2222222227', '$2b$10$7qj1TXVofEAHQNsrFcTQzeXN2FMGddFLHwwp5AqTTR3vzCEliTQJy', 'admin', NULL, NULL, '2025-05-18 09:35:19', '2025-05-20 19:18:48', NULL),
+(6, 'empdshuki7224', 'grace.hill@example.com', 'gggfdgdg', 'venujagamage2002@gmail.com', '0703881642', NULL, '$2b$10$XoH2az7SCTlImyHcmDOdFuurrYTX9DlbpscVRDaWgugWAB8jIAp5m', 'cashier', NULL, NULL, '2025-05-20 19:58:31', '2025-05-20 19:58:31', NULL);
 
 -- --------------------------------------------------------
 
@@ -413,7 +476,7 @@ CREATE TABLE `product_table` (
 --
 
 INSERT INTO `product_table` (`ProductID`, `ProductName`, `ProductDescription`, `UnitPrice`, `DateAdded`, `ShippingWeight`, `Category1`, `Category2`, `Category3`, `Material`, `FabricType`, `ReturnPolicy`, `WishlistCount`, `FinalRating`, `createdAt`, `updatedAt`, `IsActive`) VALUES
-('2w2w2w', 'wwwwww', 'wwwwwwwwwwwwwwwww', 22.00, '2025-05-14', 22.00, 'KIDS & BABY', 'Girls\' Clothing (3-16)', NULL, NULL, NULL, NULL, 2, 0.00, '2025-05-14 06:40:47', '2025-05-18 07:29:58', 1),
+('2w2w2w', 'wwwwww', 'wwwwwwwwwwwwwwwww', 22.00, '2025-05-13', 22.00, 'KIDS & BABY', 'Girls\' Clothing (3-16)', NULL, NULL, NULL, NULL, 2, 0.00, '2025-05-14 06:40:47', '2025-05-20 20:32:13', 1),
 ('p0008377', 'MENDES TROUSERS – Frescobol Carioca', 'MENDES TROUSERS – Frescobol Carioca', 1000.00, '2025-05-15', 0.40, 'MEN', 'Bottoms', 'Trousers', 'Wool', 'Chiffon', 'ddfddss', 0, 4.00, '2025-05-16 03:16:06', '2025-05-17 16:20:06', 1),
 ('P001', 'Floral Printed Blouse', 'A stylish floral printed blouse for casual wear.', 19.00, '2025-03-16', 0.50, 'WOMEN', 'Tops & Tees', 'Crop Tops', 'Cotton', 'Velvet', '7 days return', 0, 1.00, '2025-03-16 15:19:56', '2025-03-17 08:46:16', 1),
 ('P002', 'Black Crop Top', 'Trendy black crop top for summer outfits.', 15.00, '2025-03-16', 0.30, 'WOMEN', 'Tops & Tees', 'Crop Tops', 'Cotton', 'Satin', '7 days return', 0, 0.00, '2025-03-16 15:21:33', '2025-03-16 15:21:33', 1),
@@ -448,7 +511,7 @@ INSERT INTO `product_variations` (`VariationID`, `ProductID`, `SizeID`, `ColorID
 (17, 'P006', 4, 4, 19),
 (24, 'P010', 3, 1, 30),
 (25, 'P010', 2, 5, 11),
-(97, 'P001', 1, 1, 200),
+(97, 'P001', 1, 1, 212),
 (98, 'P001', 1, 1, 6600),
 (99, 'P001', 1, 1, 200),
 (111, '2w2w2w', 5, 7, 10),
@@ -569,6 +632,16 @@ ALTER TABLE `orders`
   ADD KEY `idx_payment` (`payment_id`);
 
 --
+-- Indexes for table `order_returns`
+--
+ALTER TABLE `order_returns`
+  ADD PRIMARY KEY (`return_id`),
+  ADD KEY `idx_return_order` (`order_id`),
+  ADD KEY `idx_return_customer` (`customer_id`),
+  ADD KEY `idx_return_status` (`return_status`),
+  ADD KEY `idx_return_created` (`created_at`);
+
+--
 -- Indexes for table `order_tracking`
 --
 ALTER TABLE `order_tracking`
@@ -598,6 +671,13 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `payment_methods`
   ADD PRIMARY KEY (`payment_method_id`);
+
+--
+-- Indexes for table `polocity_notifications`
+--
+ALTER TABLE `polocity_notifications`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `USER_ID` (`USER_ID`);
 
 --
 -- Indexes for table `polocity_panel_users`
@@ -644,7 +724,7 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
@@ -662,7 +742,7 @@ ALTER TABLE `colors`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `delivery_options`
@@ -680,13 +760,19 @@ ALTER TABLE `employeedetails`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `expenses_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `expenses_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+
+--
+-- AUTO_INCREMENT for table `order_returns`
+--
+ALTER TABLE `order_returns`
+  MODIFY `return_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_tracking`
@@ -698,13 +784,13 @@ ALTER TABLE `order_tracking`
 -- AUTO_INCREMENT for table `owners`
 --
 ALTER TABLE `owners`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -713,10 +799,16 @@ ALTER TABLE `payment_methods`
   MODIFY `payment_method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `polocity_notifications`
+--
+ALTER TABLE `polocity_notifications`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `polocity_panel_users`
 --
 ALTER TABLE `polocity_panel_users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `product_variations`
@@ -767,6 +859,13 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_7` FOREIGN KEY (`variation_id`) REFERENCES `product_variations` (`VariationID`);
 
 --
+-- Constraints for table `order_returns`
+--
+ALTER TABLE `order_returns`
+  ADD CONSTRAINT `order_returns_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_returns_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`ID`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `order_tracking`
 --
 ALTER TABLE `order_tracking`
@@ -778,6 +877,12 @@ ALTER TABLE `order_tracking`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods` (`payment_method_id`);
+
+--
+-- Constraints for table `polocity_notifications`
+--
+ALTER TABLE `polocity_notifications`
+  ADD CONSTRAINT `polocity_notifications_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `polocity_panel_users` (`ID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `product_variations`

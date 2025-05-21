@@ -12,10 +12,7 @@ import {
   FaChartLine, FaExchangeAlt, FaExclamationTriangle,
   FaCalendarAlt, FaShippingFast, FaClock, FaCheck
 } from 'react-icons/fa';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
-  ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell
-} from 'recharts';
+
 import withAuth from '../withAuth';
 import './OwneDashboard.css';
 

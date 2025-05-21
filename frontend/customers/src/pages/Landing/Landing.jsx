@@ -294,7 +294,7 @@ const Landing = () => {
             </div>
           </div>
           
-          <div 
+          {/* <div 
             className="category-card" 
             data-category="WATCHES"
             onClick={() => handleCategoryClick('WATCHES')}
@@ -307,9 +307,9 @@ const Landing = () => {
                 Explore <FaArrowRight />
               </div>
             </div>
-          </div>
+          </div> */}
           
-          <div className="category-card" onClick={() => handleCategoryClick('FOOTWEAR')}>
+          {/* <div className="category-card" onClick={() => handleCategoryClick('FOOTWEAR')}>
             <img src="footwear-category.jpg" alt="Footwear" />
             <div className="category-content">
               <h3>FOOTWEAR</h3>
@@ -318,9 +318,9 @@ const Landing = () => {
                 Explore <FaArrowRight />
               </div>
             </div>
-          </div>
+          </div> */}
           
-          <div className="category-card" onClick={() => handleCategoryClick('ACCESSORIES')}>
+          {/* <div className="category-card" onClick={() => handleCategoryClick('ACCESSORIES')}>
             <img src="accessories-category.jpg" alt="Accessories" />
             <div className="category-content">
               <h3>ACCESSORIES</h3>
@@ -329,7 +329,7 @@ const Landing = () => {
                 Explore <FaArrowRight />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 

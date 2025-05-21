@@ -11,7 +11,7 @@ import { FaUser, FaShoppingCart, FaCreditCard, FaUndo, FaComment,
          FaCog, FaTruck, FaEnvelope, FaQuestionCircle, FaBell, 
          FaHeart, FaSearch, FaSpinner, FaMoneyBillWave, 
          FaBoxOpen, FaCheck, FaExclamationCircle, 
-         FaRegTimesCircle } from 'react-icons/fa';
+         FaRegTimesCircle, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -135,8 +135,20 @@ const Account = ({ userId }) => {
           <a href="#shipping" className="nav-item" onClick={() => handleNavigation('/user-shipping-address')}>
             <FaTruck /> Shipping Address
           </a>
-          <a href="#help" className="nav-item" onClick={() => handleNavigation('/user-shopping-cart')}>
-            <FaQuestionCircle /> Help Center
+          <a className="nav-item" onClick={() => {
+            // Clear all items from localStorage
+            localStorage.clear();
+            // Or if you want to be more selective, remove specific keys:
+            localStorage.removeItem('token');
+            localStorage.removeItem('userData');
+            
+            // Show logout confirmation
+            toast.success('Logged out successfully');
+            
+            // Navigate to login page
+            navigate('/user-login');
+          }}>
+            <FaSignOutAlt /> Log Out
           </a>
         </nav>
       </div>

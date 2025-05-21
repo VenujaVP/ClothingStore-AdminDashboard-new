@@ -3,6 +3,21 @@ import sqldb from '../config/sqldb.js';
 // Dashboard summary stats
 export const getDashboardStats = async (req, res) => {
   try {
+    // Get time range from query params or default to "all"
+    const timeRange = req.query.timeRange || 'all';
+    
+    // Define time filter based on selected range
+    let timeFilter = '';
+    if (timeRange === 'today') {
+      timeFilter = 'AND DATE(o.created_at) = CURDATE()';
+    } else if (timeRange === 'week') {
+      timeFilter = 'AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)';
+    } else if (timeRange === 'month') {
+      timeFilter = 'AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)';
+    } else if (timeRange === 'year') {
+      timeFilter = 'AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)';
+    }
+
     // Use the promise wrapper for all queries
     const [expensesTotal] = await sqldb.promise().query('SELECT COUNT(*) AS count, IFNULL(SUM(cost),0) AS totalCost FROM expenses');
     const [customersTotal] = await sqldb.promise().query('SELECT COUNT(*) AS count FROM customers');
@@ -80,13 +95,29 @@ export const getDashboardStats = async (req, res) => {
       SELECT 
         c.ColorValue,
         COUNT(*) as order_count,
+        SUM(o.quantity) as total_quantity,
         SUM(o.total_price) as total_sales
       FROM orders o
       JOIN product_variations pv ON o.variation_id = pv.VariationID
       JOIN colors c ON pv.ColorID = c.ColorID
       WHERE o.order_status IN ('Shipped', 'Delivered')
       GROUP BY c.ColorID, c.ColorValue
-      ORDER BY total_sales DESC
+      ORDER BY total_quantity DESC
+    `);
+
+    // Get top selling products
+    const [topProducts] = await sqldb.promise().query(`
+      SELECT 
+        p.ProductID,
+        p.ProductName,
+        SUM(o.quantity) as total_quantity
+      FROM orders o
+      JOIN product_table p ON o.product_id = p.ProductID
+      WHERE o.order_status IN ('Shipped', 'Delivered')
+      ${timeFilter}
+      GROUP BY p.ProductID, p.ProductName
+      ORDER BY total_quantity DESC
+      LIMIT 5
     `);
 
     res.json({
@@ -102,6 +133,8 @@ export const getDashboardStats = async (req, res) => {
       customersByWeek,
       customersByMonth,
       salesByColor,
+      topProducts,
+      timeRange, // Return selected time range
     });
   } catch (err) {
     res.status(500).json({ error: 'Dashboard fetch failed', details: err.message });

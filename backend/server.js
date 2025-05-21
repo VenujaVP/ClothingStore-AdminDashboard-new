@@ -41,7 +41,7 @@ app.use(express.json());  //--------------------------Parses incoming JSON reque
 
 // Middleware
 app.use(cors({          //---------------------------------Allows requests from different origins
-    origin: ["http://localhost:3001", "http://localhost:3002"],
+    origin: ["http://localhost:3001", "http://localhost:3002", "http://localhost:3003"],
     methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],  //---------------Specifies the HTTP methods that are allowed
     credentials: true   //-----------------------------------allows the browser to send cookies and authentication credentials
 }));

@@ -109,13 +109,13 @@ const Login = () => {
             <h2>Sign In</h2>
             <p className="text-muted">Please sign in to continue</p>
 
-            <div className="social-login">
+            {/* <div className="social-login">
                 <GoogleLogin
                   className="social-btn google"
                   // onClick={() => googleLogin()}
                 >
                 </GoogleLogin>
-            </div>
+            </div> */}
 
             <div className="divider">
               <span>or continue with</span>

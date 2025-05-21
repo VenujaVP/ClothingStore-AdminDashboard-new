@@ -12,7 +12,7 @@ import {
   FaChartLine, FaExchangeAlt, FaExclamationTriangle,
   FaCalendarAlt, FaShippingFast, FaClock, FaCheck
 } from 'react-icons/fa';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register ArcElement for pie charts
@@ -35,16 +35,17 @@ const OwneDashboard = ({ userId }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [customerChartType, setCustomerChartType] = useState('daily');
-  const [expenseChartType, setExpenseChartType] = useState('monthly'); // Add this line
+  const [expenseChartType, setExpenseChartType] = useState('monthly');
+  const [timeRange, setTimeRange] = useState('all');
 
   useEffect(() => {
-    axios.get('http://localhost:8082/api/owner/dashboard-stats')
+    axios.get(`http://localhost:8082/api/owner/dashboard-stats?timeRange=${timeRange}`)
       .then(res => {
         setStats(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [timeRange]); // Re-fetch when time range changes
 
   if (loading) return <div>Loading...</div>;
   if (!stats) return <div>Failed to load dashboard.</div>;
@@ -101,99 +102,230 @@ const OwneDashboard = ({ userId }) => {
     ],
   };
 
-  // Prepare pie chart data for color sales
-  const colorPieData = {
+  // Customer chart options with better label formatting
+  const customerChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        grid: {
+          color: '#f0f0f0'
+        },
+        ticks: {
+          maxRotation: 45,
+          minRotation: 45,
+          font: {
+            size: 10
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0 // Ensure whole numbers only for customer count
+        }
+      }
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          title: function(tooltipItems) {
+            return tooltipItems[0].label;
+          },
+          label: function(context) {
+            return `New Customers: ${context.raw}`;
+          }
+        }
+      }
+    }
+  };
+
+  // Convert to vertical bar chart for color sales (not horizontal)
+  const colorBarData = {
     labels: stats.salesByColor.map(item => item.ColorValue),
     datasets: [{
-      data: stats.salesByColor.map(item => item.total_sales),
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        '#FFCE56',
-        '#4BC0C0',
-        '#9966FF',
-        '#FF9F40',
-        '#FF6384',
-        '#36A2EB'
-      ],
+      label: 'Quantity Sold',
+      data: stats.salesByColor.map(item => item.total_quantity),
+      backgroundColor: stats.salesByColor.map(item => {
+        const colorMap = {
+          'Black': '#000000',
+          'White': '#FFFFFF',
+          'Red': '#FF0000',
+          'Blue': '#0000FF',
+          'Green': '#008000',
+          'Yellow': '#FFFF00',
+          'Pink': '#FFC0CB',
+          'Purple': '#800080',
+          'Orange': '#FFA500',
+          'Brown': '#A52A2A',
+          'Grey': '#808080',
+          'Navy': '#000080',
+          'Cyan': '#00FFFF',
+          'Magenta': '#FF00FF',
+          'Gold': '#FFD700',
+          'Silver': '#C0C0C0'
+        };
+        return colorMap[item.ColorValue] || '#000000';
+      }),
+      borderColor: '#333',
       borderWidth: 1
     }]
   };
 
-  const pieOptions = {
+  // Vertical bar chart options
+  const colorBarOptions = {
+    indexAxis: 'x', // Makes the bar chart vertical
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right',
+        display: false
       },
-      title: {
-        display: true,
-        text: 'Sales by Color',
-        font: {
-          size: 16
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `Quantity: ${context.raw}`;
+          }
         }
       }
     },
-    maintainAspectRatio: false
+    scales: {
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: {
+            weight: 'bold'
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: '#f0f0f0'
+        },
+        ticks: {
+          precision: 0 // Ensure whole numbers for quantity
+        },
+        title: {
+          display: true,
+          text: 'Quantity Sold',
+          font: {
+            weight: 'bold'
+          }
+        }
+      }
+    }
   };
 
   return (
     <div className="owner-dashboard">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Owner Dashboard</h1>
+        <div className="time-range-selector">
+          <span>Time Range: </span>
+          <select value={timeRange} onChange={e => setTimeRange(e.target.value)}>
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">Last 7 Days</option>
+            <option value="month">Last 30 Days</option>
+            <option value="year">Last Year</option>
+          </select>
+        </div>
+      </div>
+      
       <div className="dashboard-cards">
         <div className="dashboard-card">
-          <FaChartLine size={32} />
+          <FaChartLine size={32} color="#48bb78" />
           <div>
             <div>Company Profit</div>
-            <strong>LKR {stats.profit}</strong>
+            <strong>LKR {parseFloat(stats.profit).toLocaleString()}</strong>
           </div>
         </div>  
         <div className="dashboard-card">
-          <FaMoneyBillWave size={32} />
+          <FaMoneyBillWave size={32} color="#e53e3e" />
           <div>
             <div>Total Expenses</div>
-            <strong>LKR {stats.expenses.totalCost}</strong>
+            <strong>LKR {parseFloat(stats.expenses.totalCost).toLocaleString()}</strong>
           </div>
         </div>
         <div className="dashboard-card">
-          <FaUser size={32} />
+          <FaUser size={32} color="#4299e1" />
           <div>
             <div>Total Customers</div>
             <strong>{stats.customers}</strong>
           </div>
         </div>
         <div className="dashboard-card">
-          <FaUser size={32} />
+          <FaUser size={32} color="#805ad5" />
           <div>
             <div>Total Employees</div>
             <strong>{stats.employees}</strong>
           </div>
         </div>
       </div>
-      <div className="dashboard-chart">
-        <h3>
-          Expenses by Period&nbsp;
-          <select value={expenseChartType} onChange={e => setExpenseChartType(e.target.value)}>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
+      
+      {/* New Top Products Card Section */}
+      <div className="top-products-section">
+        <h3 className="section-title">
+          <FaBoxOpen className="section-icon" />
+          Top Selling Products
         </h3>
-        <Bar data={chartData} />
+        <div className="top-products-grid">
+          {stats.topProducts && stats.topProducts.map((product, index) => (
+            <div className={`top-product-card ${index === 0 ? 'top-seller' : ''}`} key={product.ProductID}>
+              <div className="product-rank">{index + 1}</div>
+              <div className="product-details">
+                <div className="product-name">{product.ProductName}</div>
+                <div className="product-quantity">
+                  <span>{product.total_quantity}</span> units sold
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="dashboard-chart">
-        <h3>
-          New Customers&nbsp;
-          <select value={customerChartType} onChange={e => setCustomerChartType(e.target.value)}>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-        </h3>
-        <Line data={customerLineData} />
-      </div>
-      <div className="dashboard-chart">
-        <h3>Sales Distribution by Color</h3>
-        <div style={{ height: '400px' }}>
-          <Pie data={colorPieData} options={pieOptions} />
+      
+      <div className="dashboard-charts-container">
+        <div className="chart-row">
+          <div className="dashboard-chart">
+            <h3>
+              Expenses by Period&nbsp;
+              <select value={expenseChartType} onChange={e => setExpenseChartType(e.target.value)}>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </h3>
+            <div className="chart-wrapper">
+              <Bar data={chartData} options={{responsive: true, maintainAspectRatio: false}} />
+            </div>
+          </div>
+          
+          <div className="dashboard-chart">
+            <h3>
+              New Customers&nbsp;
+              <select value={customerChartType} onChange={e => setCustomerChartType(e.target.value)}>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </h3>
+            <div className="chart-wrapper">
+              <Line 
+                data={customerLineData} 
+                options={customerChartOptions} 
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="dashboard-chart wide-chart">
+          <h3>Product Quantity by Color</h3>
+          <div className="chart-wrapper">
+            <Bar data={colorBarData} options={colorBarOptions} />
+          </div>
         </div>
       </div>
     </div>

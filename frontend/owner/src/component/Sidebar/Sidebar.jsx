@@ -76,6 +76,7 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
       ],
     },
     { icon: <FaTable />, title: 'cancel Orders', path: '/cancel-orders' },
+    // { icon: <FaTable />, title: 'Log Out', path: '/cancel-orders' },
     { icon: <FaCog />, title: 'Settings', path: '/admin-settings' },
   ];
 

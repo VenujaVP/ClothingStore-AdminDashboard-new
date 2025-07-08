@@ -1,0 +1,73 @@
+classDiagram
+    class AuthController {
+        +username: String
+        +password: String
+        +email: String
+        +login(username: String, password: String): Boolean
+        +logout(userID: int): void
+        +recoverPassword(email: String): void
+        +registerUser(user: Customer): Boolean
+    }
+
+    class UserController {
+        +userID: int
+        +userData: Customer
+        +updateProfile(userID: int, userData: Customer): Boolean
+        +deleteAccount(userID: int): Boolean
+        +viewUserDetails(userID: int): Customer
+    }
+
+    class ProductController {
+        +productID: int
+        +productData: Product
+        +addProduct(product: Product): Boolean
+        +updateProduct(productID: int, productData: Product): Boolean
+        +deleteProduct(productID: int): Boolean
+        +viewProduct(productID: int): Product
+    }
+
+    class OrderController {
+        +orderID: int
+        +status: String
+        +order: Order
+        +placeOrder(order: Order): Boolean
+        +updateOrderStatus(orderID: int, status: String): Boolean
+        +viewOrder(orderID: int): Order
+        +viewAllOrders(userID: int): List<Order>
+    }
+
+    class CartController {
+        +cartID: int
+        +productID: int
+        +quantity: int
+        +addItemToCart(cartID: int, productID: int, quantity: int): Boolean
+        +removeItemFromCart(cartID: int, productID: int): Boolean
+        +viewCart(cartID: int): List<Product>
+        +calculateTotal(cartID: int): Float
+    }
+
+    class InventoryController {
+        +productID: int
+        +quantity: int
+        +addStock(productID: int, quantity: int): Boolean
+        +updateStock(productID: int, quantity: int): Boolean
+        +viewInventory(): List<Product>
+    }
+
+    class PaymentController {
+        +paymentID: int
+        +payment: Payment
+        +amount: Float
+        +processPayment(payment: Payment): Boolean
+        +refundPayment(paymentID: int): Boolean
+        +viewPaymentDetails(paymentID: int): Payment
+    }
+
+    class ReviewController {
+        +reviewID: int
+        +productID: int
+        +review: Review
+        +addReview(review: Review): Boolean
+        +deleteReview(reviewID: int): Boolean
+        +viewProductReviews(productID: int): List<Review
+    }

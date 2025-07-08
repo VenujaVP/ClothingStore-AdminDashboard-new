@@ -1,0 +1,84 @@
+classDiagram
+    class Login {
+        +username: String
+        +password: String
+        +loginTime: Date
+        +authenticateAdmin(): Boolean
+        +logout(): void
+    }
+
+    class ReportDashboard {
+        +totalSales: Float
+        +totalUsers: int
+        +totalProducts: int
+        +generateSalesReport(): Report
+        +generateUserActivityReport(): Report
+        +generateInventoryReport(): Report
+        +generateExpenseReport(): Report
+        +getSalesTrends(): List<Float>
+    }
+
+    class UserAccountsInterface {
+        +userList: List<Customer>
+        +employeeList: List<Employee>
+        +viewUserAccounts(): List<Customer>
+        +viewEmployeeAccounts(): List<Employee>
+        +updateUserAccount(userID: int, user: Customer): Boolean
+        +deleteUserAccount(userID: int): Boolean
+        +searchUserByName(name: String): List<Customer>
+    }
+
+    class ProductManagementInterface {
+        +productList: List<Product>
+        +manageProduct(product: Product): Boolean
+        +viewProductDetails(productID: int): Product
+        +addProduct(product: Product): Boolean
+        +deleteProduct(productID: int): Boolean
+        +updateProduct(productID: int, product: Product): Boolean
+    }
+
+    class OrderStatisticsInterface {
+        +totalOrders: int
+        +pendingOrders: int
+        +completedOrders: int
+        +viewOrderStatistics(): List<Order>
+        +filterOrderStatistics(startDate: Date, endDate: Date): List<Order>
+        +getTopSellingProducts(): List<Product>
+    }
+
+    class ExpensesInterface {
+        +expenseList: List<Expense>
+        +totalExpenses: Float
+        +addExpense(expense: Expense): Boolean
+        +viewExpenses(): List<Expense>
+        +deleteExpense(expenseID: int): Boolean
+        +updateExpense(expenseID: int, expense: Expense): Boolean
+    }
+
+    class EmployeeManagementInterface {
+        +employeeList: List<Employee>
+        +addEmployee(employee: Employee): Boolean
+        +viewEmployees(): List<Employee>
+        +updateEmployee(employeeID: int, employee: Employee): Boolean
+        +deleteEmployee(employeeID: int): Boolean
+        +searchEmployeeByName(name: String): List<Employee>
+    }
+
+    class Admin {
+        +adminID: int
+        +adminName: String
+        +accessLogin()
+        +accessReportDashboard()
+        +manageUserAccounts()
+        +manageProduct()
+        +viewOrderStatistics()
+        +manageExpenses()
+        +manageEmployees()
+    }
+
+    Login --> ReportDashboard : authenticateAdmin
+    ReportDashboard --> UserAccountsInterface
+    ReportDashboard --> ProductManagementInterface
+    ReportDashboard --> OrderStatisticsInterface
+    ReportDashboard --> ExpensesInterface
+    ReportDashboard --> EmployeeManagementInterface
